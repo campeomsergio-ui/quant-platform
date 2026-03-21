@@ -24,3 +24,5 @@ def test_research_output_contains_diagnostics(tmp_path: Path) -> None:
     assert "data_validation" in result.diagnostics
     assert "history_quality" in result.diagnostics
     assert "coverage_quality" in result.diagnostics
+    assert "data_quality" in result.diagnostics
+    assert "manifest" in result.diagnostics["data_quality"]

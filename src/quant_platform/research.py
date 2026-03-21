@@ -6,7 +6,7 @@ from typing import Any
 import pandas as pd
 
 from quant_platform.backtest.engine import BacktestConfig, run_backtest
-from quant_platform.data_access import DataBundle, apply_symbol_mapping, attach_delisting_returns, validate_point_in_time_bundle
+from quant_platform.data_access import DataBundle, apply_symbol_mapping, attach_delisting_returns, ensure_valid_point_in_time_bundle
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.metrics import compute_diagnostics, compute_primary_metrics
 from quant_platform.signals.base import SignalContext
@@ -15,6 +15,21 @@ from quant_platform.signals.residual_momentum import ResidualMomentumParams, Res
 from quant_platform.validation.multiple_testing import RealityCheckConfig, build_candidate_differentials, normalize_return_series, run_white_reality_check
 from quant_platform.validation.overfitting import OverfittingConfig, estimate_pbo
 from quant_platform.validation.walk_forward import WalkForwardConfig, generate_folds
+
+
+def _compact_data_quality(summary: dict[str, Any]) -> dict[str, Any]:
+    manifest = summary.get("manifest", {})
+    return {
+        "manifest": manifest,
+        "validation_summary": summary,
+        "history_quality": summary.get("history_quality"),
+        "coverage_quality": summary.get("coverage_quality"),
+        "uneven_symbol_coverage": manifest.get("uneven_symbol_coverage"),
+        "benchmark_coverage": manifest.get("benchmark_coverage", {}),
+        "metadata_coverage": manifest.get("metadata_coverage", {}),
+        "date_range": manifest.get("date_range", {}),
+        "symbol_coverage": manifest.get("symbol_coverage", {}),
+    }
 
 
 @dataclass(frozen=True)
@@ -89,7 +104,7 @@ def _build_market_data(bundle: DataBundle) -> pd.DataFrame:
 
 
 def build_baseline_signals(bundle: DataBundle, config: BaselineResearchConfig) -> dict[pd.Timestamp, pd.Series]:
-    validate_point_in_time_bundle(bundle)
+    ensure_valid_point_in_time_bundle(bundle)
     bars = apply_symbol_mapping(bundle.bars, bundle.symbol_mapping)
     dates = sorted(bars.index.get_level_values("date").unique())
     model = MeanReversionSignal(MeanReversionParams(residual_lookback=config.signal_lookback, execution_delay_days=config.execution_delay_days, residual_model=config.residual_model))
@@ -106,7 +121,7 @@ def build_baseline_signals(bundle: DataBundle, config: BaselineResearchConfig) -
 
 
 def build_residual_momentum_signals(bundle: DataBundle, lookback: int, skip_window: int, residual_model: str, execution_delay_days: int) -> dict[pd.Timestamp, pd.Series]:
-    validate_point_in_time_bundle(bundle)
+    ensure_valid_point_in_time_bundle(bundle)
     bars = apply_symbol_mapping(bundle.bars, bundle.symbol_mapping)
     dates = sorted(bars.index.get_level_values("date").unique())
     model = ResidualMomentumSignal(ResidualMomentumParams(lookback=lookback, skip_window=skip_window, execution_delay_days=execution_delay_days, residual_model=residual_model))
@@ -140,6 +155,11 @@ def run_baseline_research(bundle: DataBundle, config: BaselineResearchConfig) ->
     result = _run_strategy(bundle, signals, config.holding_period)
     result.diagnostics["num_signal_days"] = float(len(signals))
     result.diagnostics["strategy_label"] = "frozen_baseline"
+    validation = ensure_valid_point_in_time_bundle(bundle)
+    result.diagnostics["data_validation"] = validation.summary
+    result.diagnostics["history_quality"] = validation.summary.get("history_quality")
+    result.diagnostics["coverage_quality"] = validation.summary.get("coverage_quality")
+    result.diagnostics["data_quality"] = _compact_data_quality(validation.summary)
     return result
 
 
@@ -161,6 +181,11 @@ def _evaluate_residual_momentum_candidate(bundle: DataBundle, lookback: int, ski
     run.diagnostics["strategy_label"] = "residual_momentum"
     run.diagnostics["candidate_params"] = {"lookback": lookback, "skip_window": skip_window, "residual_model": residual_model}
     run.diagnostics["num_signal_days"] = float(len(signals))
+    validation = ensure_valid_point_in_time_bundle(bundle)
+    run.diagnostics["data_validation"] = validation.summary
+    run.diagnostics["history_quality"] = validation.summary.get("history_quality")
+    run.diagnostics["coverage_quality"] = validation.summary.get("coverage_quality")
+    run.diagnostics["data_quality"] = _compact_data_quality(validation.summary)
     return run
 
 
@@ -181,6 +206,8 @@ def _evaluate_folded_candidates(bundle: DataBundle, cycle_config: ResidualMoment
                     cid = _candidate_id(lookback, skip_window, residual_model)
                     run = _evaluate_residual_momentum_candidate(validation_bundle, lookback, skip_window, residual_model, cycle_config.holding_period, cycle_config.execution_delay_days)
                     run.diagnostics["fold_id"] = fold.fold_id
+                    run.diagnostics["fold_history_quality"] = run.diagnostics.get("history_quality")
+                    run.diagnostics["fold_coverage_quality"] = run.diagnostics.get("coverage_quality")
                     per_fold[cid] = run
         fold_results[fold.fold_id] = per_fold
     return fold_results
@@ -242,8 +269,8 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
     final_test_state = registry_payload.get("experiments", {}).get(record.experiment_id, {})
     comparison = {
         "cycle_label": "new_research_cycle",
-        "baseline": {"label": "frozen_mean_reversion", "metrics": baseline_result.metrics, "diagnostics": baseline_result.diagnostics, "market_tag": "US_equities_control_env"},
-        "best_residual_momentum_candidate": {"candidate_id": best_candidate, "metrics": candidate_results[best_candidate].metrics if best_candidate else {}, "diagnostics": candidate_results[best_candidate].diagnostics if best_candidate else {}, "market_tag": "US_equities_control_env"},
+        "baseline": {"label": "frozen_mean_reversion", "metrics": baseline_result.metrics, "diagnostics": baseline_result.diagnostics, "market_tag": "US_equities_control_env", "data_quality": baseline_result.diagnostics.get("data_quality", {})},
+        "best_residual_momentum_candidate": {"candidate_id": best_candidate, "metrics": candidate_results[best_candidate].metrics if best_candidate else {}, "diagnostics": candidate_results[best_candidate].diagnostics if best_candidate else {}, "market_tag": "US_equities_control_env", "data_quality": candidate_results[best_candidate].diagnostics.get("data_quality", {}) if best_candidate else {}},
         "by_fold": fold_comparison,
         "aggregate": {
             "multiple_testing": {} if rc is None else {"observed_statistic": rc.observed_statistic, "adjusted_p_value": rc.adjusted_p_value, "differential_summary": rc.differential_summary},

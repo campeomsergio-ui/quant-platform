@@ -77,6 +77,8 @@ def test_fold_generation_and_comparison_output_consistency(tmp_path: Path) -> No
     assert "benchmark_differentials" in result.comparison["by_fold"][fold_id]
     candidate_id = next(iter(result.comparison["by_fold"][fold_id]["benchmark_differentials"].keys()))
     assert "excess_annualized_return" in result.comparison["by_fold"][fold_id]["benchmark_differentials"][candidate_id]
+    assert result.fold_results[fold_id][candidate_id].diagnostics["fold_history_quality"] in {"short_history", "adequate_history", "no_history"}
+    assert "data_quality" in result.fold_results[fold_id][candidate_id].diagnostics
 
 
 def test_development_stage_cannot_silently_touch_final_test(tmp_path: Path) -> None:
@@ -122,6 +124,8 @@ def test_comparison_report_outputs(tmp_path: Path) -> None:
     candidate_id = next(iter(result.comparison["aggregate"]["benchmark_differentials"].keys()))
     assert result.comparison["aggregate"]["benchmark_differentials"][candidate_id]["history_quality"] in {"longer_history", "short_history"}
     assert "final_test_state" in result.comparison["aggregate"]
+    assert "data_quality" in result.comparison["baseline"]
+    assert "data_quality" in result.comparison["best_residual_momentum_candidate"]
 
 
 def test_cli_export_path(tmp_path: Path) -> None:
