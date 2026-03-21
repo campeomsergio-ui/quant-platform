@@ -5,7 +5,7 @@ from quant_platform.data_access import LocalJsonDataAdapter
 from quant_platform.research import BaselineResearchConfig, ResidualMomentumCycleConfig, build_residual_momentum_signals, run_residual_momentum_cycle
 from quant_platform.sample_data import write_sample_daily_equities_dataset
 from quant_platform.signals.residual_momentum import ResidualMomentumParams, compute_residual_momentum_scores
-from quant_platform.validation.multiple_testing import RealityCheckConfig, build_candidate_differentials, run_white_reality_check
+from quant_platform.validation.multiple_testing import RealityCheckConfig, build_candidate_differentials, normalize_return_series, run_white_reality_check
 
 
 def _bundle(tmp_path: Path):
@@ -41,8 +41,16 @@ def test_residualization_behavior(tmp_path: Path) -> None:
 
 
 def test_benchmark_differential_series_construction() -> None:
-    benchmark = build_candidate_differentials({"a": __import__("pandas").Series([0.01, 0.02]), "b": __import__("pandas").Series([0.00, 0.01])}, __import__("pandas").Series([0.005, 0.005]))
+    benchmark = build_candidate_differentials({"a": __import__("pandas").Series([0.01, 0.02]), "b": __import__("pandas").Series([0.00, 0.01])}, __import__("pandas").Series([0.005, 0.005]), min_history=4)
+    assert len(benchmark["a"]) >= 2
     assert float(benchmark["a"].iloc[0]) == 0.005
+
+
+def test_longer_history_benchmark_behavior() -> None:
+    import pandas as pd
+
+    series = normalize_return_series(pd.Series([0.01, 0.011, 0.012, 0.013, 0.014]), min_history=8)
+    assert len(series) >= 8
 
 
 def test_multiple_testing_interface_behavior() -> None:
@@ -67,6 +75,8 @@ def test_fold_generation_and_comparison_output_consistency(tmp_path: Path) -> No
     fold_id = next(iter(result.fold_results.keys()))
     assert "residual_momentum" in result.comparison["by_fold"][fold_id]
     assert "benchmark_differentials" in result.comparison["by_fold"][fold_id]
+    candidate_id = next(iter(result.comparison["by_fold"][fold_id]["benchmark_differentials"].keys()))
+    assert "excess_annualized_return" in result.comparison["by_fold"][fold_id]["benchmark_differentials"][candidate_id]
 
 
 def test_development_stage_cannot_silently_touch_final_test(tmp_path: Path) -> None:
@@ -109,6 +119,8 @@ def test_comparison_report_outputs(tmp_path: Path) -> None:
     bundle = _bundle(tmp_path)
     result = run_residual_momentum_cycle(bundle, BaselineResearchConfig(), ResidualMomentumCycleConfig(lookbacks=(20,), skip_windows=(5,), residual_models=("industry_beta",), seed=7), registry={})
     assert result.comparison["aggregate"]["benchmark_differentials"]
+    candidate_id = next(iter(result.comparison["aggregate"]["benchmark_differentials"].keys()))
+    assert result.comparison["aggregate"]["benchmark_differentials"][candidate_id]["history_quality"] in {"longer_history", "short_history"}
     assert "final_test_state" in result.comparison["aggregate"]
 
 

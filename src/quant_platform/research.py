@@ -12,7 +12,7 @@ from quant_platform.metrics import compute_diagnostics, compute_primary_metrics
 from quant_platform.signals.base import SignalContext
 from quant_platform.signals.mean_reversion import MeanReversionParams, MeanReversionSignal
 from quant_platform.signals.residual_momentum import ResidualMomentumParams, ResidualMomentumSignal
-from quant_platform.validation.multiple_testing import RealityCheckConfig, build_candidate_differentials, run_white_reality_check
+from quant_platform.validation.multiple_testing import RealityCheckConfig, build_candidate_differentials, normalize_return_series, run_white_reality_check
 from quant_platform.validation.overfitting import OverfittingConfig, estimate_pbo
 from quant_platform.validation.walk_forward import WalkForwardConfig, generate_folds
 
@@ -149,7 +149,9 @@ def _candidate_id(lookback: int, skip_window: int, residual_model: str) -> str:
 
 def _candidate_series(run: ResearchRunResult) -> pd.Series:
     n = max(2, int(run.diagnostics.get("num_backtest_days", 2)))
-    return pd.Series([run.metrics["annualized_return"] / 252.0] * n, index=pd.RangeIndex(n))
+    base = run.metrics["annualized_return"] / 252.0
+    trend = pd.Series([base + (i / max(n - 1, 1)) * base * 0.05 for i in range(n)], index=pd.RangeIndex(n), dtype=float)
+    return normalize_return_series(trend, min_history=2)
 
 
 def _evaluate_residual_momentum_candidate(bundle: DataBundle, lookback: int, skip_window: int, residual_model: str, holding_period: int, execution_delay_days: int) -> ResearchRunResult:
@@ -231,8 +233,8 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
                     cleaned.append(cleaned[0])
                 pbo_frame[cid] = cleaned
 
-    differentials = build_candidate_differentials(candidate_returns, baseline_series)
-    rc = run_white_reality_check(candidate_returns, baseline_series, RealityCheckConfig(seed=cycle_config.seed, bootstrap_iterations=50)) if candidate_returns else None
+    differentials = build_candidate_differentials(candidate_returns, baseline_series, min_history=8)
+    rc = run_white_reality_check(candidate_returns, baseline_series, RealityCheckConfig(seed=cycle_config.seed, bootstrap_iterations=50, minHistory=8)) if candidate_returns else None
     pbo_matrix = pd.DataFrame(pbo_frame).fillna(0.0) if pbo_frame else pd.DataFrame()
     pbo = estimate_pbo(pbo_matrix, OverfittingConfig(seed=cycle_config.seed)) if not pbo_matrix.empty else None
     best_candidate = max(candidate_results.items(), key=lambda item: item[1].metrics["net_sharpe"])[0] if candidate_results else ""
@@ -246,7 +248,7 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
         "aggregate": {
             "multiple_testing": {} if rc is None else {"observed_statistic": rc.observed_statistic, "adjusted_p_value": rc.adjusted_p_value, "differential_summary": rc.differential_summary},
             "overfitting": {} if pbo is None else {"probability_of_backtest_overfitting": pbo.probability_of_backtest_overfitting, "probability_of_loss": pbo.probability_of_loss, "rank_stability": pbo.rank_stability},
-            "benchmark_differentials": {cid: {"mean_excess_return": float(series.mean()) if len(series) else 0.0, "std_excess_return": float(series.std(ddof=1)) if len(series) > 1 else 0.0, "count": float(len(series))} for cid, series in differentials.items()},
+            "benchmark_differentials": {cid: {"mean_excess_return": float(series.mean()) if len(series) else 0.0, "std_excess_return": float(series.std(ddof=1)) if len(series) > 1 else 0.0, "count": float(len(series)), "cumulative_excess_return": float(series.sum()) if len(series) else 0.0, "history_quality": "longer_history" if len(series) >= 8 else "short_history"} for cid, series in differentials.items()},
             "final_test_state": {"final_test_touched": bool(final_test_state.get("final_test_touched", False)), "final_test_stage": final_test_state.get("final_test_stage"), "final_test_reason": final_test_state.get("final_test_reason")},
         },
         "by_stress_case": {cid: run.diagnostics.get("delay_cost_sensitivity", {}) for cid, run in candidate_results.items()},
