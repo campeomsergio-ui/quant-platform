@@ -41,14 +41,7 @@ def build_experiment_id(spec: dict[str, Any], plan: dict[str, Any], blueprint: d
 
 
 def create_experiment_record(spec: dict[str, Any], plan: dict[str, Any], blueprint: dict[str, Any], seed: int, metadata: dict[str, Any]) -> ExperimentRecord:
-    return ExperimentRecord(
-        experiment_id=build_experiment_id(spec, plan, blueprint, seed),
-        spec_hash=stable_payload_hash(spec),
-        plan_hash=stable_payload_hash(plan),
-        blueprint_hash=stable_payload_hash(blueprint),
-        seed=seed,
-        metadata=metadata,
-    )
+    return ExperimentRecord(experiment_id=build_experiment_id(spec, plan, blueprint, seed), spec_hash=stable_payload_hash(spec), plan_hash=stable_payload_hash(plan), blueprint_hash=stable_payload_hash(blueprint), seed=seed, metadata=metadata)
 
 
 def append_candidate_record(registry: dict[str, Any], experiment_id: str, candidate: CandidateRecord) -> dict[str, Any]:
@@ -63,14 +56,18 @@ def append_candidate_record(registry: dict[str, Any], experiment_id: str, candid
     return updated
 
 
-def mark_final_test_touched(registry: dict[str, Any], experiment_id: str, touched_at: str) -> dict[str, Any]:
+def mark_final_test_touched(registry: dict[str, Any], experiment_id: str, touched_at: str, stage: str, reason: str) -> dict[str, Any]:
     updated = dict(registry)
     experiments = dict(updated.get("experiments", {}))
     experiment = dict(experiments.get(experiment_id, {}))
+    if stage != "final_test":
+        raise ValueError("final test touch requires explicit final_test stage")
     if experiment.get("final_test_touched", False):
         raise ValueError("locked final test already touched for experiment")
     experiment["final_test_touched"] = True
     experiment["final_test_touched_at"] = touched_at
+    experiment["final_test_stage"] = stage
+    experiment["final_test_reason"] = reason
     experiments[experiment_id] = experiment
     updated["experiments"] = experiments
     return updated

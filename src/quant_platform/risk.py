@@ -35,12 +35,21 @@ def estimate_beta(returns: pd.DataFrame, benchmark: pd.Series) -> ReturnSeries:
     return ReturnSeries(pd.Series(betas, dtype=float))
 
 
+def neutralize_beta_exposure(weights: pd.Series, beta: pd.Series, target: float = 0.0) -> pd.Series:
+    adjusted = weights.copy()
+    beta = beta.reindex(adjusted.index).fillna(0.0)
+    hedge = ((adjusted * beta).sum() - target) / max((beta**2).sum(), 1e-12)
+    adjusted = adjusted - hedge * beta
+    gross = adjusted.abs().sum()
+    if gross > 0:
+        adjusted = adjusted / gross * weights.abs().sum()
+    return adjusted
+
+
 def neutralize_exposures(weights: PortfolioWeights, exposures: pd.DataFrame) -> PortfolioWeights:
     adjusted = weights.weights.copy()
     if "beta" in exposures.columns and adjusted.abs().sum() > 0:
-        beta = exposures["beta"].reindex(adjusted.index).fillna(0.0)
-        hedge = (adjusted * beta).sum() / max((beta**2).sum(), 1e-12)
-        adjusted = adjusted - hedge * beta
+        adjusted = neutralize_beta_exposure(adjusted, exposures["beta"], 0.0)
     gross = adjusted.abs().sum()
     if gross > 0:
         adjusted = adjusted / gross

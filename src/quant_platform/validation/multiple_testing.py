@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -18,6 +19,7 @@ class RealityCheckResult:
     observed_statistic: float
     adjusted_p_value: float
     bootstrap_max_statistics: list[float]
+    differential_summary: dict[str, dict[str, float]] | None = None
 
 
 def stationary_bootstrap(returns: pd.Series, config: RealityCheckConfig) -> list[pd.Series]:
@@ -38,8 +40,28 @@ def stationary_bootstrap(returns: pd.Series, config: RealityCheckConfig) -> list
     return samples
 
 
+def build_candidate_differentials(candidate_returns: dict[str, pd.Series], benchmark_returns: pd.Series) -> dict[str, pd.Series]:
+    aligned_benchmark = benchmark_returns.sort_index()
+    differentials: dict[str, pd.Series] = {}
+    for key, series in candidate_returns.items():
+        aligned_candidate, aligned_benchmark_local = series.sort_index().align(aligned_benchmark, join="inner")
+        differentials[key] = aligned_candidate.sub(aligned_benchmark_local, fill_value=0.0)
+    return differentials
+
+
+def summarize_differentials(differentials: dict[str, pd.Series]) -> dict[str, dict[str, float]]:
+    return {
+        key: {
+            "mean": float(series.mean()) if len(series) else 0.0,
+            "std": float(series.std(ddof=1)) if len(series) > 1 else 0.0,
+            "count": float(len(series)),
+        }
+        for key, series in differentials.items()
+    }
+
+
 def run_white_reality_check(candidate_returns: dict[str, pd.Series], benchmark_returns: pd.Series, config: RealityCheckConfig) -> RealityCheckResult:
-    differentials = {k: v.sub(benchmark_returns, fill_value=0.0) for k, v in candidate_returns.items()}
+    differentials = build_candidate_differentials(candidate_returns, benchmark_returns)
     observed = max((series.mean() / (series.std(ddof=1) + 1e-12) for series in differentials.values()), default=0.0)
     bootstrap_max = []
     centered = {k: v - v.mean() for k, v in differentials.items()}
@@ -51,4 +73,4 @@ def run_white_reality_check(candidate_returns: dict[str, pd.Series], benchmark_r
             stats.append(sample.mean() / (sample.std(ddof=1) + 1e-12))
         bootstrap_max.append(max(stats, default=0.0))
     adjusted = float(sum(value >= observed for value in bootstrap_max) / max(len(bootstrap_max), 1))
-    return RealityCheckResult(observed_statistic=float(observed), adjusted_p_value=adjusted, bootstrap_max_statistics=bootstrap_max)
+    return RealityCheckResult(observed_statistic=float(observed), adjusted_p_value=adjusted, bootstrap_max_statistics=bootstrap_max, differential_summary=summarize_differentials(differentials))
