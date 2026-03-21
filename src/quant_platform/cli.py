@@ -4,7 +4,7 @@ import argparse
 from datetime import UTC, datetime
 from typing import Sequence
 
-from quant_platform.data_access import LocalJsonDataAdapter
+from quant_platform.data_access import LocalJsonDataAdapter, inspect_local_dataset
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.io import load_json, save_json
@@ -54,6 +54,14 @@ def run_baseline_local(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_inspect_dataset(args: argparse.Namespace) -> int:
+    payload = inspect_local_dataset(args.data_root, preferred_format=args.preferred_format)
+    if args.export_path:
+        save_json(args.export_path, payload)
+    print(payload)
+    return 0
+
+
 def run_paper_daily(args: argparse.Namespace) -> int:
     bundle = LocalJsonDataAdapter(args.data_root).load_bundle()
     signal_model = MeanReversionSignal(MeanReversionParams(residual_model=args.residual_model, residual_lookback=args.signal_lookback, execution_delay_days=1))
@@ -98,6 +106,11 @@ def build_parser() -> argparse.ArgumentParser:
     baseline.add_argument("--holding-period", type=int, default=5)
     baseline.add_argument("--execution-delay-days", type=int, default=1)
     baseline.set_defaults(func=run_baseline_local)
+    inspect = sub.add_parser("inspect-data-local")
+    inspect.add_argument("--data-root", required=True)
+    inspect.add_argument("--preferred-format", default="auto")
+    inspect.add_argument("--export-path")
+    inspect.set_defaults(func=run_inspect_dataset)
     paper = sub.add_parser("run-paper-daily")
     paper.add_argument("--data-root", required=True)
     paper.add_argument("--state-path", default="state/paper_runtime_state.json")

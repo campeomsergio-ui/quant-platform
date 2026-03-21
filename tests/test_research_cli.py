@@ -21,3 +21,6 @@ def test_research_output_contains_diagnostics(tmp_path: Path) -> None:
     assert "long_short_attribution" in result.diagnostics
     assert "turnover_decomposition" in result.diagnostics
     assert "capacity_stress" in result.diagnostics
+    assert "data_validation" in result.diagnostics
+    assert "history_quality" in result.diagnostics
+    assert "coverage_quality" in result.diagnostics

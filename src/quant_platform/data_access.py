@@ -1,12 +1,27 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 import pandas as pd
 
 from quant_platform.io import load_json
+
+
+@dataclass(frozen=True)
+class ValidationIssue:
+    level: str
+    code: str
+    message: str
+    context: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class DataValidationReport:
+    ok: bool
+    issues: list[ValidationIssue]
+    summary: dict[str, Any]
 
 
 @dataclass(frozen=True)
@@ -17,14 +32,18 @@ class DataBundle:
     benchmark: pd.Series
     delistings: pd.DataFrame
     symbol_mapping: pd.DataFrame
+    dataset_manifest: dict[str, Any] = field(default_factory=dict)
+    data_quality_metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class DailyEquitiesDataAdapter(Protocol):
     def load_bundle(self) -> DataBundle: ...
 
 
-REQUIRED_BAR_COLUMNS = {"open", "high", "low", "close", "volume", "adv", "daily_volatility"}
-REQUIRED_META_COLUMNS = {"sector", "industry", "beta", "market_cap", "security_type", "is_primary_listing", "symbol", "effective_from", "effective_to"}
+REQUIRED_BAR_COLUMNS = {"open", "high", "low", "close", "volume"}
+OPTIONAL_BAR_COLUMNS = {"adv", "daily_volatility", "shares_outstanding", "market_cap", "currency", "primary_exchange"}
+REQUIRED_META_COLUMNS = {"sector", "industry", "security_type", "is_primary_listing", "symbol", "effective_from", "effective_to"}
+OPTIONAL_META_COLUMNS = {"beta", "market_cap", "shares_outstanding", "country", "currency", "region", "calendar"}
 REQUIRED_MAPPING_COLUMNS = {"raw_symbol", "canonical_symbol", "effective_from", "effective_to"}
 REQUIRED_DELISTING_COLUMNS = {"symbol", "delisting_date", "delisting_return"}
 
@@ -34,14 +53,26 @@ class LocalJsonDataAdapter:
     root: str
 
     def load_bundle(self) -> DataBundle:
+        return LocalTableDataAdapter(self.root, preferred_format="json").load_bundle()
+
+
+@dataclass(frozen=True)
+class LocalTableDataAdapter:
+    root: str
+    preferred_format: str = "auto"
+
+    def load_bundle(self) -> DataBundle:
         base = Path(self.root)
-        bars = _load_frame(base / "bars.json", multi_index=["date", "symbol"])
-        corporate_actions = _load_frame(base / "corporate_actions.json")
-        metadata = _load_frame(base / "metadata.json")
-        benchmark_df = _load_frame(base / "benchmark.json")
-        delistings = _load_frame(base / "delistings.json")
-        symbol_mapping = _load_frame(base / "symbol_mapping.json")
-        benchmark = benchmark_df.set_index("date")["return"].sort_index()
+        bars = _load_named_frame(base, "bars", multi_index=["date", "symbol"], preferred_format=self.preferred_format)
+        corporate_actions = _load_named_frame(base, "corporate_actions", preferred_format=self.preferred_format)
+        metadata = _load_named_frame(base, "metadata", preferred_format=self.preferred_format)
+        benchmark_df = _load_named_frame(base, "benchmark", preferred_format=self.preferred_format)
+        delistings = _load_named_frame(base, "delistings", preferred_format=self.preferred_format)
+        symbol_mapping = _load_named_frame(base, "symbol_mapping", preferred_format=self.preferred_format)
+        manifest = _load_optional_json(base / "manifest.json")
+        quality = _load_optional_json(base / "data_quality.json")
+        benchmark = pd.Series(dtype=float) if benchmark_df.empty else benchmark_df.set_index("date")["return"].sort_index()
+        dataset_manifest = build_dataset_manifest(bars, metadata, benchmark, delistings, symbol_mapping, existing_manifest=manifest)
         return DataBundle(
             bars=bars,
             corporate_actions=corporate_actions,
@@ -49,24 +80,105 @@ class LocalJsonDataAdapter:
             benchmark=benchmark,
             delistings=delistings,
             symbol_mapping=symbol_mapping,
+            dataset_manifest=dataset_manifest,
+            data_quality_metadata=quality,
         )
 
 
+def _load_optional_json(path: Path) -> dict[str, Any]:
+    return load_json(str(path)) if path.exists() else {}
+
+
+def _load_named_frame(base: Path, stem: str, multi_index: list[str] | None = None, preferred_format: str = "auto") -> pd.DataFrame:
+    candidates: list[Path]
+    if preferred_format == "json":
+        candidates = [base / f"{stem}.json"]
+    elif preferred_format == "csv":
+        candidates = [base / f"{stem}.csv"]
+    elif preferred_format == "parquet":
+        candidates = [base / f"{stem}.parquet"]
+    else:
+        candidates = [base / f"{stem}.parquet", base / f"{stem}.csv", base / f"{stem}.json"]
+    for path in candidates:
+        if path.exists():
+            return _load_frame(path, multi_index=multi_index)
+    return pd.DataFrame()
+
+
 def _load_frame(path: Path, multi_index: list[str] | None = None) -> pd.DataFrame:
-    payload = load_json(str(path))
-    frame = pd.DataFrame(payload.get("rows", []))
+    if path.suffix == ".json":
+        payload = load_json(str(path))
+        frame = pd.DataFrame(payload.get("rows", []))
+    elif path.suffix == ".csv":
+        frame = pd.read_csv(path)
+    elif path.suffix == ".parquet":
+        frame = pd.read_parquet(path)
+    else:
+        raise ValueError(f"unsupported data file format: {path.suffix}")
     if frame.empty:
         return frame
-    datetime_cols = [
-        col
-        for col in frame.columns
-        if any(token in col for token in ["date", "effective_from", "effective_to", "delisting_date"])
-    ]
+    datetime_cols = [col for col in frame.columns if any(token in col for token in ["date", "effective_from", "effective_to", "delisting_date"])]
     for col in datetime_cols:
         frame[col] = pd.to_datetime(frame[col], errors="coerce")
     if multi_index:
         frame = frame.set_index(multi_index).sort_index()
     return frame
+
+
+def _field_availability_summary(bars: pd.DataFrame, metadata: pd.DataFrame) -> dict[str, Any]:
+    bar_fields = {col: float(bars[col].notna().mean()) if col in bars.columns and len(bars) else 0.0 for col in sorted(REQUIRED_BAR_COLUMNS | OPTIONAL_BAR_COLUMNS) if col in bars.columns}
+    meta_fields = {col: float(metadata[col].notna().mean()) if col in metadata.columns and len(metadata) else 0.0 for col in sorted(REQUIRED_META_COLUMNS | OPTIONAL_META_COLUMNS) if col in metadata.columns}
+    return {"bars": bar_fields, "metadata": meta_fields}
+
+
+def build_dataset_manifest(bars: pd.DataFrame, metadata: pd.DataFrame, benchmark: pd.Series, delistings: pd.DataFrame, symbol_mapping: pd.DataFrame, existing_manifest: dict[str, Any] | None = None) -> dict[str, Any]:
+    existing_manifest = existing_manifest or {}
+    if isinstance(bars.index, pd.MultiIndex) and len(bars):
+        dates = bars.index.get_level_values("date")
+        symbols = bars.index.get_level_values("symbol")
+        symbol_counts = bars.reset_index().groupby("date")["symbol"].nunique()
+        symbol_coverage = {
+            "min_symbols_per_day": int(symbol_counts.min()),
+            "median_symbols_per_day": float(symbol_counts.median()),
+            "max_symbols_per_day": int(symbol_counts.max()),
+            "coverage_stability": float(symbol_counts.min() / max(symbol_counts.max(), 1)),
+        }
+        date_range = {"start": str(dates.min().date()), "end": str(dates.max().date()), "trading_days": int(len(dates.unique()))}
+        history_quality = "adequate_history" if len(dates.unique()) >= 252 else "short_history"
+        coverage_quality = "broad" if symbol_coverage["median_symbols_per_day"] >= 100 else "narrow_or_sample"
+        uneven_symbol_coverage = float(symbol_coverage["coverage_stability"]) < 0.5
+        symbol_count = int(symbols.nunique())
+    else:
+        symbol_coverage = {"min_symbols_per_day": 0, "median_symbols_per_day": 0.0, "max_symbols_per_day": 0, "coverage_stability": 0.0}
+        date_range = {"start": None, "end": None, "trading_days": 0}
+        history_quality = "no_history"
+        coverage_quality = "no_coverage"
+        uneven_symbol_coverage = False
+        symbol_count = 0
+    benchmark_coverage = {
+        "count": int(len(benchmark)),
+        "coverage_ratio_vs_trading_days": float(len(benchmark) / max(date_range["trading_days"], 1)),
+    }
+    metadata_coverage = {
+        "row_count": int(len(metadata)),
+        "sector_coverage": float(metadata["sector"].notna().mean()) if "sector" in metadata.columns and len(metadata) else 0.0,
+        "industry_coverage": float(metadata["industry"].notna().mean()) if "industry" in metadata.columns and len(metadata) else 0.0,
+    }
+    manifest = {
+        **existing_manifest,
+        "date_range": date_range,
+        "symbol_count": symbol_count,
+        "symbol_coverage": symbol_coverage,
+        "benchmark_coverage": benchmark_coverage,
+        "metadata_coverage": metadata_coverage,
+        "delisting_coverage": {"count": int(len(delistings))},
+        "symbol_mapping_coverage": {"count": int(len(symbol_mapping)), "raw_symbols": int(symbol_mapping["raw_symbol"].nunique()) if not symbol_mapping.empty and "raw_symbol" in symbol_mapping.columns else 0},
+        "field_availability": _field_availability_summary(bars, metadata),
+        "history_quality": history_quality,
+        "coverage_quality": coverage_quality,
+        "uneven_symbol_coverage": uneven_symbol_coverage,
+    }
+    return manifest
 
 
 def apply_symbol_mapping(bars: pd.DataFrame, symbol_mapping: pd.DataFrame, as_of: pd.Timestamp | None = None) -> pd.DataFrame:
@@ -93,32 +205,121 @@ def attach_delisting_returns(returns: pd.DataFrame, delistings: pd.DataFrame) ->
     return updated
 
 
-def validate_point_in_time_bundle(bundle: DataBundle) -> None:
+def _check_symbol_mapping_continuity(mapping: pd.DataFrame) -> list[ValidationIssue]:
+    issues: list[ValidationIssue] = []
+    if mapping.empty:
+        return issues
+    for raw_symbol, group in mapping.sort_values(["raw_symbol", "effective_from"]).groupby("raw_symbol"):
+        prev_end: pd.Timestamp | None = None
+        for row in group.itertuples(index=False):
+            if prev_end is not None and pd.notna(prev_end) and pd.notna(row.effective_from) and row.effective_from < prev_end:
+                issues.append(ValidationIssue(level="error", code="mapping_overlap", message="symbol mapping intervals overlap", context={"raw_symbol": str(raw_symbol)}))
+            prev_end = row.effective_to
+    return issues
+
+
+def validate_point_in_time_bundle(bundle: DataBundle) -> DataValidationReport:
+    issues: list[ValidationIssue] = []
     bars = bundle.bars
     meta = bundle.metadata
     mapping = bundle.symbol_mapping
     delistings = bundle.delistings
+    benchmark = bundle.benchmark
+    manifest = bundle.dataset_manifest or build_dataset_manifest(bars, meta, benchmark, delistings, mapping)
+
     if not isinstance(bars.index, pd.MultiIndex) or list(bars.index.names) != ["date", "symbol"]:
-        raise ValueError("bars must be indexed by [date, symbol]")
+        issues.append(ValidationIssue("error", "bad_bar_index", "bars must be indexed by [date, symbol]"))
     missing_bar_cols = REQUIRED_BAR_COLUMNS.difference(bars.columns)
     if missing_bar_cols:
-        raise ValueError(f"bars missing columns: {sorted(missing_bar_cols)}")
+        issues.append(ValidationIssue("error", "missing_bar_columns", "bars missing required columns", {"columns": sorted(missing_bar_cols)}))
     missing_meta_cols = REQUIRED_META_COLUMNS.difference(meta.columns)
     if missing_meta_cols:
-        raise ValueError(f"metadata missing columns: {sorted(missing_meta_cols)}")
+        issues.append(ValidationIssue("error", "missing_metadata_columns", "metadata missing required columns", {"columns": sorted(missing_meta_cols)}))
     missing_mapping_cols = REQUIRED_MAPPING_COLUMNS.difference(mapping.columns)
     if missing_mapping_cols:
-        raise ValueError(f"symbol_mapping missing columns: {sorted(missing_mapping_cols)}")
+        issues.append(ValidationIssue("error", "missing_mapping_columns", "symbol_mapping missing required columns", {"columns": sorted(missing_mapping_cols)}))
     missing_delisting_cols = REQUIRED_DELISTING_COLUMNS.difference(delistings.columns)
     if missing_delisting_cols:
-        raise ValueError(f"delistings missing columns: {sorted(missing_delisting_cols)}")
+        issues.append(ValidationIssue("error", "missing_delisting_columns", "delistings missing required columns", {"columns": sorted(missing_delisting_cols)}))
     if bars.index.duplicated().any():
-        raise ValueError("bars contain duplicate [date, symbol] rows")
-    if not bars.index.get_level_values("date").is_monotonic_increasing:
-        raise ValueError("bars dates must be monotonic increasing")
-    if (meta["effective_to"].notna() & (meta["effective_to"] < meta["effective_from"])).any():
-        raise ValueError("metadata has invalid effective date ranges")
-    if (mapping["effective_to"].notna() & (mapping["effective_to"] < mapping["effective_from"])).any():
-        raise ValueError("symbol_mapping has invalid effective date ranges")
-    if not set(bundle.benchmark.index).issubset(set(bars.index.get_level_values("date").unique())):
-        raise ValueError("benchmark dates must be subset of bar dates")
+        issues.append(ValidationIssue("error", "duplicate_bar_rows", "bars contain duplicate [date, symbol] rows"))
+    if isinstance(bars.index, pd.MultiIndex) and not bars.index.get_level_values("date").is_monotonic_increasing:
+        issues.append(ValidationIssue("error", "non_monotonic_bar_dates", "bars dates must be monotonic increasing"))
+    if not meta.empty and (meta["effective_to"].notna() & (meta["effective_to"] < meta["effective_from"])).any():
+        issues.append(ValidationIssue("error", "invalid_metadata_ranges", "metadata has invalid effective date ranges"))
+    if not mapping.empty and (mapping["effective_to"].notna() & (mapping["effective_to"] < mapping["effective_from"])).any():
+        issues.append(ValidationIssue("error", "invalid_mapping_ranges", "symbol_mapping has invalid effective date ranges"))
+    issues.extend(_check_symbol_mapping_continuity(mapping))
+    if isinstance(bars.index, pd.MultiIndex) and not benchmark.empty:
+        bar_dates = set(bars.index.get_level_values("date").unique())
+        missing_benchmark = sorted(bar_dates.difference(set(benchmark.index)))
+        if missing_benchmark:
+            issues.append(ValidationIssue("error", "missing_benchmark_coverage", "benchmark dates do not fully cover bar dates", {"missing_count": len(missing_benchmark)}))
+    if not delistings.empty and isinstance(bars.index, pd.MultiIndex):
+        known_symbols = set(bars.index.get_level_values("symbol")) | set(mapping.get("canonical_symbol", pd.Series(dtype=object)))
+        missing_delisting_symbols = sorted(set(delistings["symbol"].astype(str)).difference(set(map(str, known_symbols))))
+        if missing_delisting_symbols:
+            issues.append(ValidationIssue("warning", "unknown_delisting_symbols", "delistings contain symbols not found in bars/mapping", {"symbols": missing_delisting_symbols[:10]}))
+    if manifest.get("date_range", {}).get("trading_days", 0) < 252:
+        issues.append(ValidationIssue("warning", "insufficient_history", "dataset history is short for robust folds", {"trading_days": manifest.get("date_range", {}).get("trading_days", 0)}))
+    if manifest.get("benchmark_coverage", {}).get("coverage_ratio_vs_trading_days", 0.0) < 1.0:
+        issues.append(ValidationIssue("error", "benchmark_gap_ratio", "benchmark coverage ratio below full trading-day coverage", {"coverage_ratio": manifest.get("benchmark_coverage", {}).get("coverage_ratio_vs_trading_days", 0.0)}))
+    if manifest.get("metadata_coverage", {}).get("sector_coverage", 0.0) < 0.8 or manifest.get("metadata_coverage", {}).get("industry_coverage", 0.0) < 0.8:
+        issues.append(ValidationIssue("warning", "sparse_metadata_coverage", "sector/industry metadata coverage is sparse", {"metadata_coverage": manifest.get("metadata_coverage", {})}))
+    if manifest.get("uneven_symbol_coverage", False):
+        issues.append(ValidationIssue("warning", "uneven_symbol_coverage", "symbol coverage varies materially through time", {"symbol_coverage": manifest.get("symbol_coverage", {})}))
+    if manifest.get("history_quality") == "short_history":
+        issues.append(ValidationIssue("warning", "short_history_quality", "history may be too short for stable walk-forward evaluation", {"history_quality": manifest.get("history_quality")}))
+
+    summary = {
+        "bar_row_count": int(len(bars)),
+        "symbol_count": int(len(bars.index.get_level_values("symbol").unique())) if isinstance(bars.index, pd.MultiIndex) and len(bars) else 0,
+        "benchmark_count": int(len(benchmark)),
+        "issue_count": int(len(issues)),
+        "manifest": manifest,
+        "quality_metadata": bundle.data_quality_metadata,
+        "history_quality": manifest.get("history_quality", "unknown"),
+        "coverage_quality": manifest.get("coverage_quality", "unknown"),
+    }
+    return DataValidationReport(ok=not any(issue.level == "error" for issue in issues), issues=issues, summary=summary)
+
+
+def ensure_valid_point_in_time_bundle(bundle: DataBundle) -> DataValidationReport:
+    report = validate_point_in_time_bundle(bundle)
+    if not report.ok:
+        first_error = next(issue for issue in report.issues if issue.level == "error")
+        raise ValueError(f"{first_error.code}: {first_error.message}")
+    return report
+
+
+def inspect_local_dataset(root: str, preferred_format: str = "auto") -> dict[str, Any]:
+    bundle = LocalTableDataAdapter(root=root, preferred_format=preferred_format).load_bundle()
+    report = validate_point_in_time_bundle(bundle)
+    issue_counts = {
+        "errors": sum(1 for issue in report.issues if issue.level == "error"),
+        "warnings": sum(1 for issue in report.issues if issue.level == "warning"),
+    }
+    human_summary = {
+        "ok": report.ok,
+        "date_range": report.summary.get("manifest", {}).get("date_range", {}),
+        "history_quality": report.summary.get("history_quality"),
+        "coverage_quality": report.summary.get("coverage_quality"),
+        "issue_counts": issue_counts,
+    }
+    return {
+        "manifest": bundle.dataset_manifest,
+        "validation": {
+            "ok": report.ok,
+            "summary": report.summary,
+            "issues": [
+                {
+                    "level": issue.level,
+                    "code": issue.code,
+                    "message": issue.message,
+                    "context": issue.context,
+                }
+                for issue in report.issues
+            ],
+        },
+        "human_summary": human_summary,
+    }
