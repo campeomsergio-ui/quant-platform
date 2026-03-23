@@ -30,7 +30,8 @@ def test_run_backtest_generates_overlapping_tranches() -> None:
     assert len(result.net_returns) == 5
     assert result.diagnostics["status"] == "implemented_core_backtest"
     tranches = simulate_tranches(signals, 5)
-    assert len(tranches.columns) == 5
+    assert len(tranches.columns) == len(dates)
+    assert isinstance(tranches.loc[dates[-1], dates[-1].strftime("%Y-%m-%d")], pd.Series)
 
 
 def test_generate_orders_matches_target_weights() -> None:

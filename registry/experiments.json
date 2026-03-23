@@ -24,6 +24,17 @@
           },
           "family_name": "residual_momentum_cycle",
           "stage": "development"
+        },
+        {
+          "candidate_id": "rmom_lb20_sk5_industry_beta_log_mcap",
+          "params": {
+            "lookback": 20,
+            "skip_window": 5,
+            "residual_model": "industry_beta_log_mcap",
+            "market_tag": "US_equities_control_env"
+          },
+          "family_name": "residual_momentum_cycle",
+          "stage": "development"
         }
       ]
     }

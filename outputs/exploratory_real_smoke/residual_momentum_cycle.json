@@ -10,20 +10,20 @@
     }
   ],
   "multiple_testing": {
-    "observed_statistic": 0.0,
-    "adjusted_p_value": 1.0,
+    "observed_statistic": 2462.0564061787795,
+    "adjusted_p_value": 0.0,
     "differential_summary": {
       "rmom_lb20_sk5_industry_beta_log_mcap": {
-        "mean": 0.0,
-        "std": 0.0,
-        "count": 8.0,
-        "cumulative_excess": 0.0
+        "mean": 0.0015702585816071773,
+        "std": 6.37782349587952e-07,
+        "count": 34.0,
+        "cumulative_excess": 0.05338879177464403
       }
     }
   },
   "overfitting": {
     "probability_of_backtest_overfitting": 1.0,
-    "probability_of_loss": 0.0,
+    "probability_of_loss": 1.0,
     "rank_stability": 0.0
   },
   "comparison": {
@@ -31,45 +31,57 @@
     "baseline": {
       "label": "frozen_mean_reversion",
       "metrics": {
-        "net_sharpe": NaN,
-        "annualized_return": NaN,
-        "max_drawdown": 0.0,
-        "t_stat": NaN
+        "net_sharpe": -23.450167969449144,
+        "annualized_return": -1.0196849887955983,
+        "max_drawdown": 0.19210372920926,
+        "t_stat": -10.855318424579247
       },
       "diagnostics": {
-        "num_backtest_days": 0.0,
+        "num_backtest_days": 54.0,
         "backtest_status": "implemented_core_backtest",
         "market_tag": "US_equities",
-        "average_turnover": 0.0,
-        "effective_bets": 0.0,
+        "average_turnover": 0.025425222472091138,
+        "effective_bets": 2.18218403887055,
         "long_short_attribution": {
-          "long_total": 0.0,
-          "short_total": 0.0,
-          "net_total": 0.0,
-          "one_sided_pnl_ratio": Infinity
+          "long_total": 0.003616439778270166,
+          "short_total": -0.0018441792524909733,
+          "net_total": 0.0017722605257791929,
+          "one_sided_pnl_ratio": 1.9610023111497212
         },
         "turnover_decomposition": {
-          "signal_change": 0.0,
-          "tranche_rolloff": 0.0,
-          "constraint_repair": 0.0,
-          "internal_netting_effect": 0.0
+          "signal_change": 108.0,
+          "tranche_rolloff": 98.0,
+          "constraint_repair": 477.16487275991614,
+          "internal_netting_effect": 40.0
         },
         "exposure_summary": {
-          "beta": 0.0,
-          "sector_exposures": {},
-          "size_proxy": 0.0,
-          "concentration": 0.0,
-          "effective_breadth": 0.0
+          "beta": 9.540979117872439e-18,
+          "sector_exposures": {
+            "Communication Services": -0.008552397868561278,
+            "Consumer Discretionary": -0.009006188047900075,
+            "Consumer Staples": 0.015018907924139117,
+            "Energy": 0.00215550335185928,
+            "Financials": -0.011388586489428752,
+            "Health Care": 0.003063083710536871,
+            "Information Technology": 0.008735460952271821
+          },
+          "size_proxy": 6383022975.9926815,
+          "concentration": 0.017628201455337195,
+          "effective_breadth": 7.576468731545462
         },
         "capacity_stress": {
-          "baseline_cost": 0.0,
-          "cost_1_5x": 0.0,
-          "cost_2_0x": 0.0,
-          "avg_adv_participation": 0.0,
-          "max_adv_participation": 0.0
+          "baseline_cost": 0.22027618669626453,
+          "cost_1_5x": 0.33041428004439677,
+          "cost_2_0x": 0.44055237339252906,
+          "avg_adv_participation": 2.063130003223415e-10,
+          "max_adv_participation": 5.940220033665885e-09
         },
         "delay_cost_sensitivity": {
-          "cost_stress": {},
+          "cost_stress": {
+            "baseline_total_cost": 0.22027618669626453,
+            "cost_1_5x_total": 0.3304142800443968,
+            "cost_2_0x_total": 0.44055237339252906
+          },
           "execution_delay": {
             "baseline_days": 1,
             "optimistic_same_close_mode": false
@@ -743,45 +755,57 @@
     "best_residual_momentum_candidate": {
       "candidate_id": "rmom_lb20_sk5_industry_beta_log_mcap",
       "metrics": {
-        "net_sharpe": NaN,
-        "annualized_return": NaN,
-        "max_drawdown": 0.0,
-        "t_stat": NaN
+        "net_sharpe": -15.664224410962667,
+        "annualized_return": -0.6242461280437666,
+        "max_drawdown": 0.07481769263122073,
+        "t_stat": -5.753711534187536
       },
       "diagnostics": {
-        "num_backtest_days": 0.0,
+        "num_backtest_days": 34.0,
         "backtest_status": "implemented_core_backtest",
         "market_tag": "US_equities",
-        "average_turnover": 0.0,
-        "effective_bets": 0.0,
+        "average_turnover": 0.014535966687072315,
+        "effective_bets": 0.9736822476071376,
         "long_short_attribution": {
-          "long_total": 0.0,
-          "short_total": 0.0,
-          "net_total": 0.0,
-          "one_sided_pnl_ratio": Infinity
+          "long_total": -0.0012365259068722097,
+          "short_total": -0.001724676059425341,
+          "net_total": -0.0029612019662975508,
+          "one_sided_pnl_ratio": 0.7169612515913607
         },
         "turnover_decomposition": {
-          "signal_change": 0.0,
-          "tranche_rolloff": 0.0,
-          "constraint_repair": 0.0,
+          "signal_change": 68.0,
+          "tranche_rolloff": 58.0,
+          "constraint_repair": 318.7968246523826,
           "internal_netting_effect": 0.0
         },
         "exposure_summary": {
-          "beta": 0.0,
-          "sector_exposures": {},
-          "size_proxy": 0.0,
-          "concentration": 0.0,
-          "effective_breadth": 0.0
+          "beta": 1.734723475976807e-18,
+          "sector_exposures": {
+            "Communication Services": -0.01542368045649073,
+            "Consumer Discretionary": -0.002156918687589158,
+            "Consumer Staples": -0.00056490727532097,
+            "Energy": 0.012085592011412268,
+            "Financials": -0.0010784593437945793,
+            "Health Care": 0.02473609129814551,
+            "Information Technology": -0.00395435092724679
+          },
+          "size_proxy": -18343395149.78602,
+          "concentration": 0.01434522111269615,
+          "effective_breadth": 5.3867347596495145
         },
         "capacity_stress": {
-          "baseline_cost": 0.0,
-          "cost_1_5x": 0.0,
-          "cost_2_0x": 0.0,
-          "avg_adv_participation": 0.0,
-          "max_adv_participation": 0.0
+          "baseline_cost": 0.08126248197611541,
+          "cost_1_5x": 0.12189372296417311,
+          "cost_2_0x": 0.16252496395223082,
+          "avg_adv_participation": 9.617835346951785e-11,
+          "max_adv_participation": 2.9573264057334513e-09
         },
         "delay_cost_sensitivity": {
-          "cost_stress": {},
+          "cost_stress": {
+            "baseline_total_cost": 0.08126248197611541,
+            "cost_1_5x_total": 0.12189372296417313,
+            "cost_2_0x_total": 0.16252496395223082
+          },
           "execution_delay": {
             "baseline_days": 1,
             "optimistic_same_close_mode": false
@@ -1461,22 +1485,26 @@
     "by_fold": {
       "exploratory_local_sample_fold": {
         "baseline": {
-          "net_sharpe": NaN,
-          "annualized_return": NaN,
-          "max_drawdown": 0.0,
-          "t_stat": NaN
+          "net_sharpe": -23.450167969449144,
+          "annualized_return": -1.0196849887955983,
+          "max_drawdown": 0.19210372920926,
+          "t_stat": -10.855318424579247
         },
         "residual_momentum": {
           "rmom_lb20_sk5_industry_beta_log_mcap": {
-            "net_sharpe": NaN,
-            "annualized_return": NaN,
-            "max_drawdown": 0.0,
-            "t_stat": NaN
+            "net_sharpe": -18.64494143734827,
+            "annualized_return": -0.8166312496977514,
+            "max_drawdown": 0.0072763609575347,
+            "t_stat": -2.3490418215517472
           }
         },
         "stress": {
           "rmom_lb20_sk5_industry_beta_log_mcap": {
-            "cost_stress": {},
+            "cost_stress": {
+              "baseline_total_cost": 0.013629230846598242,
+              "cost_1_5x_total": 0.020443846269897363,
+              "cost_2_0x_total": 0.027258461693196484
+            },
             "execution_delay": {
               "baseline_days": 1,
               "optimistic_same_close_mode": false
@@ -1485,36 +1513,36 @@
         },
         "benchmark_differentials": {
           "rmom_lb20_sk5_industry_beta_log_mcap": {
-            "excess_annualized_return": NaN,
-            "excess_sharpe": NaN
+            "excess_annualized_return": 0.20305373909784696,
+            "excess_sharpe": 4.805226532100875
           }
         }
       }
     },
     "aggregate": {
       "multiple_testing": {
-        "observed_statistic": 0.0,
-        "adjusted_p_value": 1.0,
+        "observed_statistic": 2462.0564061787795,
+        "adjusted_p_value": 0.0,
         "differential_summary": {
           "rmom_lb20_sk5_industry_beta_log_mcap": {
-            "mean": 0.0,
-            "std": 0.0,
-            "count": 8.0,
-            "cumulative_excess": 0.0
+            "mean": 0.0015702585816071773,
+            "std": 6.37782349587952e-07,
+            "count": 34.0,
+            "cumulative_excess": 0.05338879177464403
           }
         }
       },
       "overfitting": {
         "probability_of_backtest_overfitting": 1.0,
-        "probability_of_loss": 0.0,
+        "probability_of_loss": 1.0,
         "rank_stability": 0.0
       },
       "benchmark_differentials": {
         "rmom_lb20_sk5_industry_beta_log_mcap": {
-          "mean_excess_return": 0.0,
-          "std_excess_return": 0.0,
-          "count": 8.0,
-          "cumulative_excess_return": 0.0,
+          "mean_excess_return": 0.0015702585816071773,
+          "std_excess_return": 6.37782349587952e-07,
+          "count": 34.0,
+          "cumulative_excess_return": 0.05338879177464403,
           "history_quality": "longer_history"
         }
       },
@@ -1526,7 +1554,11 @@
     },
     "by_stress_case": {
       "rmom_lb20_sk5_industry_beta_log_mcap": {
-        "cost_stress": {},
+        "cost_stress": {
+          "baseline_total_cost": 0.08126248197611541,
+          "cost_1_5x_total": 0.12189372296417313,
+          "cost_2_0x_total": 0.16252496395223082
+        },
         "execution_delay": {
           "baseline_days": 1,
           "optimistic_same_close_mode": false

@@ -38,15 +38,12 @@ class BacktestEngine:
 
 def simulate_tranches(signals: dict[pd.Timestamp, pd.Series], holding_period: int) -> pd.DataFrame:
     ordered_dates = sorted(signals)
-    columns = [entry_date.strftime("%Y-%m-%d") for entry_date in ordered_dates[:holding_period]]
+    columns = [entry_date.strftime("%Y-%m-%d") for entry_date in ordered_dates]
     frame = pd.DataFrame(index=ordered_dates, columns=columns, dtype=object)
-    for active_date in ordered_dates:
-        active_idx = ordered_dates.index(active_date)
+    for active_idx, active_date in enumerate(ordered_dates):
         for entry_date in ordered_dates[max(0, active_idx - holding_period + 1) : active_idx + 1]:
-            entry_idx = ordered_dates.index(entry_date)
-            col = ordered_dates[entry_idx].strftime("%Y-%m-%d")
-            if col in frame.columns:
-                frame.at[active_date, col] = signals[entry_date]
+            col = entry_date.strftime("%Y-%m-%d")
+            frame.at[active_date, col] = signals[entry_date]
     return frame
 
 
