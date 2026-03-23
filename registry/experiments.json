@@ -1,0 +1,31 @@
+{
+  "experiments": {
+    "080f48dbd769f841": {
+      "record": {
+        "experiment_id": "080f48dbd769f841",
+        "spec_hash": "0e4a268548755403cff00538fa7951a3374548b4a68a6f8fe436fbf70c8d7162",
+        "plan_hash": "2b49258f170122b58a1bc39bab435b260757f64d68e288d5ab1cb3360d7e8d16",
+        "blueprint_hash": "079a1d498de3dd6c3d7c0998a7fba1e3949aeb7403496ddbec739b0319dc1988",
+        "seed": 0,
+        "metadata": {
+          "cycle_type": "new_research_cycle",
+          "stage": "development",
+          "baseline_separate": true
+        }
+      },
+      "candidates": [
+        {
+          "candidate_id": "rmom_lb20_sk5_industry_beta_log_mcap",
+          "params": {
+            "lookback": 20,
+            "skip_window": 5,
+            "residual_model": "industry_beta_log_mcap",
+            "market_tag": "US_equities_control_env"
+          },
+          "family_name": "residual_momentum_cycle",
+          "stage": "development"
+        }
+      ]
+    }
+  }
+}

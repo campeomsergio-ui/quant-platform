@@ -1,0 +1,13 @@
+symbol,sector,industry,beta,market_cap,security_type,is_primary_listing,effective_from,effective_to,country,currency,region
+AAPL,Information Technology,"Technology Hardware, Storage & Peripherals",1.2,2900000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+MSFT,Information Technology,Systems Software,0.95,3100000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+NVDA,Information Technology,Semiconductors,1.7,2200000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+AMZN,Consumer Discretionary,Broadline Retail,1.15,1900000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+META,Communication Services,Interactive Media & Services,1.25,1300000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+GOOGL,Communication Services,Interactive Media & Services,1.05,1800000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+JPM,Financials,Diversified Banks,1.05,550000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+XOM,Energy,Integrated Oil & Gas,0.95,480000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+JNJ,Health Care,Pharmaceuticals,0.6,380000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+PG,Consumer Staples,Household Products,0.55,380000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+UNH,Health Care,Managed Health Care,0.75,450000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
+HD,Consumer Discretionary,Home Improvement Retail,0.95,330000000000.0,COMMON,True,2025-01-01T00:00:00,,US,USD,US
