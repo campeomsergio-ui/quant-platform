@@ -234,7 +234,7 @@ def _evaluate_folded_candidates(bundle: DataBundle, cycle_config: ResidualMoment
     return fold_results
 
 
-def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineResearchConfig, cycle_config: ResidualMomentumCycleConfig, registry: dict[str, Any] | None = None) -> ResidualMomentumCycleResult:
+def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineResearchConfig, cycle_config: ResidualMomentumCycleConfig, registry: dict[str, Any] | None = None, baseline_result: ResearchRunResult | None = None) -> ResidualMomentumCycleResult:
     cycle_t0 = perf_counter()
     _trace("residual_cycle_start", lookbacks=list(cycle_config.lookbacks), skip_windows=list(cycle_config.skip_windows), residual_models=list(cycle_config.residual_models))
     registry_payload = {} if registry is None else dict(registry)
@@ -263,9 +263,13 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
     candidate_family: list[dict[str, Any]] = []
     candidate_returns: dict[str, pd.Series] = {}
     pbo_frame: dict[str, list[float]] = {}
-    _trace("baseline_comparison_start")
-    baseline_result = run_baseline_research(bundle, baseline_config)
-    _trace("baseline_comparison_done", elapsed_seconds=round(perf_counter() - cycle_t0, 3), baseline_backtest_days=baseline_result.diagnostics.get("num_backtest_days"))
+    if baseline_result is None:
+        _trace("baseline_comparison_start", baseline_source="recomputed")
+        baseline_result = run_baseline_research(bundle, baseline_config)
+        _trace("baseline_comparison_done", baseline_source="recomputed", elapsed_seconds=round(perf_counter() - cycle_t0, 3), baseline_backtest_days=baseline_result.diagnostics.get("num_backtest_days"))
+    else:
+        _trace("baseline_comparison_start", baseline_source="precomputed")
+        _trace("baseline_comparison_done", baseline_source="precomputed", elapsed_seconds=0.0, baseline_backtest_days=baseline_result.diagnostics.get("num_backtest_days"))
     fold_results = _evaluate_folded_candidates(bundle, cycle_config)
     baseline_series = _candidate_series(baseline_result)
 
