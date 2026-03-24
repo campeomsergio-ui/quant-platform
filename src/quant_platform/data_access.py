@@ -89,10 +89,76 @@ def _load_optional_json(path: Path) -> dict[str, Any]:
     return load_json(str(path)) if path.exists() else {}
 
 
+def validate_external_table_source(source_root: str, *, preferred_format: str = "auto") -> dict[str, Any]:
+    source = Path(source_root)
+    bars = _load_named_frame(source, "bars", preferred_format=preferred_format)
+    metadata = _load_named_frame(source, "metadata", preferred_format=preferred_format)
+    symbol_mapping = _load_named_frame(source, "symbol_mapping", preferred_format=preferred_format)
+    benchmark = _load_named_frame(source, "benchmark", preferred_format=preferred_format)
+    delistings = _load_named_frame(source, "delistings", preferred_format=preferred_format)
+    corporate_actions = _load_named_frame(source, "corporate_actions", preferred_format=preferred_format)
+
+    missing_files = [
+        stem for stem, frame in {
+            "bars": bars,
+            "metadata": metadata,
+            "symbol_mapping": symbol_mapping,
+            "benchmark": benchmark,
+            "delistings": delistings,
+            "corporate_actions": corporate_actions,
+        }.items() if frame.empty and not any((source / f"{stem}.{ext}").exists() for ext in ("csv", "json", "parquet"))
+    ]
+    issues: list[dict[str, Any]] = []
+    if missing_files:
+        issues.append({"level": "error", "code": "missing_required_files", "message": "required bundle files are missing", "context": {"files": missing_files}})
+    if "date" not in bars.columns:
+        issues.append({"level": "error", "code": "missing_bars_date", "message": "bars must include date column"})
+    if "symbol" not in bars.columns:
+        issues.append({"level": "error", "code": "missing_bars_symbol", "message": "bars must include symbol column"})
+    missing_bar_cols = sorted(REQUIRED_BAR_COLUMNS.difference(bars.columns)) if not bars.empty else sorted(REQUIRED_BAR_COLUMNS)
+    if missing_bar_cols:
+        issues.append({"level": "error", "code": "missing_bar_columns", "message": "bars missing required columns", "context": {"columns": missing_bar_cols}})
+    missing_meta_cols = sorted(REQUIRED_META_COLUMNS.difference(metadata.columns)) if not metadata.empty else sorted(REQUIRED_META_COLUMNS)
+    if missing_meta_cols:
+        issues.append({"level": "error", "code": "missing_metadata_columns", "message": "metadata missing required columns", "context": {"columns": missing_meta_cols}})
+    missing_mapping_cols = sorted(REQUIRED_MAPPING_COLUMNS.difference(symbol_mapping.columns)) if not symbol_mapping.empty else sorted(REQUIRED_MAPPING_COLUMNS)
+    if missing_mapping_cols:
+        issues.append({"level": "error", "code": "missing_mapping_columns", "message": "symbol_mapping missing required columns", "context": {"columns": missing_mapping_cols}})
+    benchmark_required = {"date", "return"}
+    missing_benchmark_cols = sorted(benchmark_required.difference(benchmark.columns)) if not benchmark.empty else sorted(benchmark_required)
+    if missing_benchmark_cols:
+        issues.append({"level": "error", "code": "missing_benchmark_columns", "message": "benchmark missing required columns", "context": {"columns": missing_benchmark_cols}})
+    missing_delisting_cols = sorted(REQUIRED_DELISTING_COLUMNS.difference(delistings.columns)) if not delistings.empty else []
+    if missing_delisting_cols:
+        issues.append({"level": "error", "code": "missing_delisting_columns", "message": "delistings missing required columns", "context": {"columns": missing_delisting_cols}})
+    corp_required = {"symbol", "effective_date", "action_type", "value"}
+    missing_corp_cols = sorted(corp_required.difference(corporate_actions.columns)) if not corporate_actions.empty else []
+    if missing_corp_cols:
+        issues.append({"level": "error", "code": "missing_corporate_action_columns", "message": "corporate_actions missing required columns", "context": {"columns": missing_corp_cols}})
+
+    return {
+        "ok": not any(issue["level"] == "error" for issue in issues),
+        "issues": issues,
+        "row_counts": {
+            "bars": int(len(bars)),
+            "metadata": int(len(metadata)),
+            "symbol_mapping": int(len(symbol_mapping)),
+            "benchmark": int(len(benchmark)),
+            "delistings": int(len(delistings)),
+            "corporate_actions": int(len(corporate_actions)),
+        },
+    }
+
+
 def import_external_table_bundle(source_root: str, dest_root: str, *, source_name: str, notes: str = "", benchmark_name: str = "", preferred_format: str = "auto") -> dict[str, Any]:
     source = Path(source_root)
     dest = Path(dest_root)
     dest.mkdir(parents=True, exist_ok=True)
+
+    preflight = validate_external_table_source(source_root, preferred_format=preferred_format)
+    if not preflight["ok"]:
+        first_error = next(issue for issue in preflight["issues"] if issue["level"] == "error")
+        raise ValueError(f"{first_error['code']}: {first_error['message']}")
 
     bars = _load_named_frame(source, "bars", preferred_format=preferred_format)
     metadata = _load_named_frame(source, "metadata", preferred_format=preferred_format)

@@ -4,7 +4,7 @@ import argparse
 from datetime import UTC, datetime
 from typing import Sequence
 
-from quant_platform.data_access import LocalJsonDataAdapter, LocalTableDataAdapter, import_external_table_bundle, inspect_local_dataset
+from quant_platform.data_access import LocalJsonDataAdapter, LocalTableDataAdapter, import_external_table_bundle, inspect_local_dataset, validate_external_table_source
 from quant_platform.etf_trend import DEFAULT_ETF_TREND_CANDIDATES, DEFAULT_ETF_TREND_REFINED_CANDIDATES, EtfTrendCycleConfig, run_etf_trend_cycle
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
@@ -73,6 +73,12 @@ def run_paper_daily(args: argparse.Namespace) -> int:
 
 def run_import_external_dataset(args: argparse.Namespace) -> int:
     payload = import_external_table_bundle(args.source_root, args.dest_root, source_name=args.source_name, notes=args.notes, benchmark_name=args.benchmark_name, preferred_format=args.preferred_format)
+    print(payload)
+    return 0
+
+
+def run_validate_external_dataset(args: argparse.Namespace) -> int:
+    payload = validate_external_table_source(args.source_root, preferred_format=args.preferred_format)
     print(payload)
     return 0
 
@@ -151,6 +157,10 @@ def build_parser() -> argparse.ArgumentParser:
     import_ds.add_argument("--preferred-format", default="auto")
     import_ds.add_argument("--notes", default="")
     import_ds.set_defaults(func=run_import_external_dataset)
+    validate_ext = sub.add_parser("validate-external-dataset")
+    validate_ext.add_argument("--source-root", required=True)
+    validate_ext.add_argument("--preferred-format", default="auto")
+    validate_ext.set_defaults(func=run_validate_external_dataset)
     etf = sub.add_parser("run-etf-trend-cycle")
     etf.add_argument("--data-root", required=True)
     etf.add_argument("--export-path")
