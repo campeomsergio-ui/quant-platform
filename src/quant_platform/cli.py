@@ -4,7 +4,8 @@ import argparse
 from datetime import UTC, datetime
 from typing import Sequence
 
-from quant_platform.data_access import LocalJsonDataAdapter, import_external_table_bundle, inspect_local_dataset
+from quant_platform.data_access import LocalJsonDataAdapter, LocalTableDataAdapter, import_external_table_bundle, inspect_local_dataset
+from quant_platform.etf_trend import DEFAULT_ETF_TREND_CANDIDATES, EtfTrendCycleConfig, run_etf_trend_cycle
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.io import load_json, save_json
@@ -76,6 +77,16 @@ def run_import_external_dataset(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_etf_trend_cycle_cli(args: argparse.Namespace) -> int:
+    bundle = LocalTableDataAdapter(args.data_root, preferred_format="auto").load_bundle()
+    candidates = tuple(c for c in DEFAULT_ETF_TREND_CANDIDATES if (not args.candidate_ids or c.candidate_id in args.candidate_ids))
+    payload = run_etf_trend_cycle(bundle, EtfTrendCycleConfig(candidates=candidates, rebalance_frequency=args.rebalance_frequency, execution_delay_days=args.execution_delay_days))
+    if args.export_path:
+        save_json(args.export_path, payload)
+    print(payload)
+    return 0
+
+
 def run_residual_momentum_cycle_cli(args: argparse.Namespace) -> int:
     print({"stage": "bundle_load_start", "data_root": args.data_root})
     bundle = LocalJsonDataAdapter(args.data_root).load_bundle()
@@ -139,6 +150,13 @@ def build_parser() -> argparse.ArgumentParser:
     import_ds.add_argument("--preferred-format", default="auto")
     import_ds.add_argument("--notes", default="")
     import_ds.set_defaults(func=run_import_external_dataset)
+    etf = sub.add_parser("run-etf-trend-cycle")
+    etf.add_argument("--data-root", required=True)
+    etf.add_argument("--export-path")
+    etf.add_argument("--candidate-id", dest="candidate_ids", action="append", default=[])
+    etf.add_argument("--rebalance-frequency", default="M")
+    etf.add_argument("--execution-delay-days", type=int, default=1)
+    etf.set_defaults(func=run_etf_trend_cycle_cli)
     rmom = sub.add_parser("run-residual-momentum-cycle")
     rmom.add_argument("--data-root", required=True)
     rmom.add_argument("--registry", default=DEFAULT_REGISTRY_PATH)

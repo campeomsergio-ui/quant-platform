@@ -1,0 +1,18 @@
+symbol,sector,industry,security_type,is_primary_listing,effective_from,effective_to,country,currency,region,beta,market_cap
+SPY,BroadEquity,US Large Cap Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+QQQ,BroadEquity,NASDAQ 100 Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+IWM,BroadEquity,US Small Cap Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLK,Sector,Technology Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLF,Sector,Financials Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLE,Sector,Energy Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLV,Sector,Health Care Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLI,Sector,Industrials Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLP,Sector,Consumer Staples Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLY,Sector,Consumer Discretionary Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+XLU,Sector,Utilities Equity,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+TLT,Rates,Long Treasury,etf,True,2010-01-04,,US,USD,North America,0.2,10000000000.0
+IEF,Rates,7-10Y Treasury,etf,True,2010-01-04,,US,USD,North America,0.2,10000000000.0
+GLD,Commodity,Gold,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+SLV,Commodity,Silver,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+USO,Commodity,Oil,etf,True,2010-01-04,,US,USD,North America,1.0,10000000000.0
+SHY,CashProxy,1-3Y Treasury,etf,True,2010-01-04,,US,USD,North America,0.2,10000000000.0
