@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from typing import Sequence
 
 from quant_platform.data_access import LocalJsonDataAdapter, LocalTableDataAdapter, import_external_table_bundle, inspect_local_dataset
-from quant_platform.etf_trend import DEFAULT_ETF_TREND_CANDIDATES, EtfTrendCycleConfig, run_etf_trend_cycle
+from quant_platform.etf_trend import DEFAULT_ETF_TREND_CANDIDATES, DEFAULT_ETF_TREND_REFINED_CANDIDATES, EtfTrendCycleConfig, run_etf_trend_cycle
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.io import load_json, save_json
@@ -79,7 +79,8 @@ def run_import_external_dataset(args: argparse.Namespace) -> int:
 
 def run_etf_trend_cycle_cli(args: argparse.Namespace) -> int:
     bundle = LocalTableDataAdapter(args.data_root, preferred_format="auto").load_bundle()
-    candidates = tuple(c for c in DEFAULT_ETF_TREND_CANDIDATES if (not args.candidate_ids or c.candidate_id in args.candidate_ids))
+    family = DEFAULT_ETF_TREND_REFINED_CANDIDATES if args.family == "refined" else DEFAULT_ETF_TREND_CANDIDATES
+    candidates = tuple(c for c in family if (not args.candidate_ids or c.candidate_id in args.candidate_ids))
     payload = run_etf_trend_cycle(bundle, EtfTrendCycleConfig(candidates=candidates, rebalance_frequency=args.rebalance_frequency, execution_delay_days=args.execution_delay_days))
     if args.export_path:
         save_json(args.export_path, payload)
@@ -153,6 +154,7 @@ def build_parser() -> argparse.ArgumentParser:
     etf = sub.add_parser("run-etf-trend-cycle")
     etf.add_argument("--data-root", required=True)
     etf.add_argument("--export-path")
+    etf.add_argument("--family", choices=["baseline", "refined"], default="baseline")
     etf.add_argument("--candidate-id", dest="candidate_ids", action="append", default=[])
     etf.add_argument("--rebalance-frequency", default="M")
     etf.add_argument("--execution-delay-days", type=int, default=1)

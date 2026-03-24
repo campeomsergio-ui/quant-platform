@@ -34,6 +34,13 @@ DEFAULT_ETF_TREND_CANDIDATES = (
     EtfTrendCandidate("tsmom_ret_126_ief", 126, "trailing_return_sign", "IEF"),
 )
 
+DEFAULT_ETF_TREND_REFINED_CANDIDATES = (
+    EtfTrendCandidate("tsmom_ma_200_cash", 200, "moving_average_filter", "CASH"),
+    EtfTrendCandidate("tsmom_ma_200_shy", 200, "moving_average_filter", "SHY"),
+    EtfTrendCandidate("tsmom_dual_63_252_cash", 252, "dual_horizon_agreement", "CASH"),
+    EtfTrendCandidate("tsmom_dual_63_252_shy", 252, "dual_horizon_agreement", "SHY"),
+)
+
 
 def _trace(stage: str, **fields: Any) -> None:
     print({"stage": stage, **fields}, flush=True)
@@ -67,17 +74,23 @@ def _month_end_rebalance_dates(index: pd.DatetimeIndex) -> list[pd.Timestamp]:
 def _compute_candidate_weights(closes: pd.DataFrame, candidate: EtfTrendCandidate, rebalance_dates: list[pd.Timestamp], tradable_symbols: list[str]) -> dict[pd.Timestamp, pd.Series]:
     trailing = closes[tradable_symbols].pct_change(candidate.lookback)
     ma_filter = closes[tradable_symbols] / closes[tradable_symbols].rolling(candidate.lookback).mean() - 1.0
+    short_trailing = closes[tradable_symbols].pct_change(63)
     weights: dict[pd.Timestamp, pd.Series] = {}
     for date in rebalance_dates:
         if date not in trailing.index:
             continue
         if candidate.rule == "trailing_return_sign":
             signal = trailing.loc[date]
+            positive = signal[signal > 0].dropna().index.tolist()
         elif candidate.rule == "moving_average_filter":
             signal = ma_filter.loc[date]
+            positive = signal[signal > 0].dropna().index.tolist()
+        elif candidate.rule == "dual_horizon_agreement":
+            signal = trailing.loc[date]
+            short_signal = short_trailing.loc[date]
+            positive = signal[(signal > 0) & (short_signal > 0)].dropna().index.tolist()
         else:
             raise ValueError(f"unsupported ETF trend rule: {candidate.rule}")
-        positive = signal[signal > 0].dropna().index.tolist()
         w = pd.Series(0.0, index=closes.columns)
         if positive:
             alloc = 1.0 / len(positive)

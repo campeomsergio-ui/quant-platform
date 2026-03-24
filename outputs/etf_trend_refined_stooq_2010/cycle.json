@@ -1,0 +1,1772 @@
+{
+  "cycle_label": "etf_trend_following_cycle",
+  "dataset_manifest": {
+    "date_range": {
+      "start": "2010-01-04",
+      "end": "2025-03-31",
+      "trading_days": 3833
+    },
+    "symbol_count": 17,
+    "symbol_coverage": {
+      "min_symbols_per_day": 17,
+      "median_symbols_per_day": 17.0,
+      "max_symbols_per_day": 17,
+      "coverage_stability": 1.0
+    },
+    "benchmark_coverage": {
+      "count": 3833,
+      "coverage_ratio_vs_trading_days": 1.0
+    },
+    "metadata_coverage": {
+      "row_count": 17,
+      "sector_coverage": 1.0,
+      "industry_coverage": 1.0
+    },
+    "delisting_coverage": {
+      "count": 0
+    },
+    "symbol_mapping_coverage": {
+      "count": 17,
+      "raw_symbols": 17
+    },
+    "field_availability": {
+      "bars": {
+        "adv": 1.0,
+        "close": 1.0,
+        "daily_volatility": 1.0,
+        "high": 1.0,
+        "low": 1.0,
+        "open": 1.0,
+        "volume": 1.0
+      },
+      "metadata": {
+        "beta": 1.0,
+        "country": 1.0,
+        "currency": 1.0,
+        "effective_from": 1.0,
+        "effective_to": 0.0,
+        "industry": 1.0,
+        "is_primary_listing": 1.0,
+        "market_cap": 1.0,
+        "region": 1.0,
+        "sector": 1.0,
+        "security_type": 1.0,
+        "symbol": 1.0
+      }
+    },
+    "history_quality": "adequate_history",
+    "coverage_quality": "narrow_or_sample",
+    "uneven_symbol_coverage": false
+  },
+  "data_quality_metadata": {
+    "source": {
+      "provider": "Stooq daily CSV endpoint",
+      "bars_urls": {
+        "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+        "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+        "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+        "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+        "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+        "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+        "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+        "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+        "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+        "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+        "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+        "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+        "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+        "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+        "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+        "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+        "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+      },
+      "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+      "download_window": {
+        "start": "2010-01-04",
+        "end": "2025-03-31"
+      }
+    },
+    "dataset_notes": {
+      "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+      "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+      "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+      "rejected_symbols": [],
+      "realism_limitations": [
+        "public ETF data only",
+        "empty delistings",
+        "empty corporate actions",
+        "benchmark is price index not total return"
+      ]
+    },
+    "row_counts": {
+      "bars": 65161,
+      "symbols": 17,
+      "benchmark_rows": 3833
+    },
+    "source_rows": [
+      {
+        "symbol": "SPY",
+        "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "QQQ",
+        "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "IWM",
+        "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLK",
+        "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLF",
+        "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLE",
+        "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLV",
+        "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLI",
+        "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLP",
+        "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLY",
+        "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "XLU",
+        "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "TLT",
+        "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "IEF",
+        "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "GLD",
+        "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "SLV",
+        "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "USO",
+        "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+        "rows": 3833
+      },
+      {
+        "symbol": "SHY",
+        "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+        "rows": 3833
+      }
+    ]
+  },
+  "candidate_family": [
+    {
+      "candidate_id": "tsmom_ma_200_cash",
+      "lookback": 200,
+      "rule": "moving_average_filter",
+      "defensive_asset": "CASH"
+    },
+    {
+      "candidate_id": "tsmom_ma_200_shy",
+      "lookback": 200,
+      "rule": "moving_average_filter",
+      "defensive_asset": "SHY"
+    },
+    {
+      "candidate_id": "tsmom_dual_63_252_cash",
+      "lookback": 252,
+      "rule": "dual_horizon_agreement",
+      "defensive_asset": "CASH"
+    },
+    {
+      "candidate_id": "tsmom_dual_63_252_shy",
+      "lookback": 252,
+      "rule": "dual_horizon_agreement",
+      "defensive_asset": "SHY"
+    }
+  ],
+  "results": [
+    {
+      "candidate_id": "tsmom_ma_200_cash",
+      "params": {
+        "lookback": 200,
+        "rule": "moving_average_filter",
+        "defensive_asset": "CASH",
+        "rebalance_frequency": "M",
+        "execution_delay_days": 1
+      },
+      "metrics": {
+        "net_sharpe": -16.238731760256062,
+        "annualized_return": -5.848005662134291,
+        "max_drawdown": 0.952177841603954,
+        "t_stat": -11.573289646210037
+      },
+      "diagnostics": {
+        "num_signal_days": 129.0,
+        "num_backtest_days": 128.0,
+        "average_turnover": 0.455684202949828,
+        "time_in_market": 0.953125,
+        "average_position_count": 10.734375,
+        "average_gross_exposure": 0.953125,
+        "long_short_attribution": {
+          "long_total": -2.9704155744174177,
+          "short_total": 0.0,
+          "net_total": -2.9704155744174177,
+          "one_sided_pnl_ratio": 0.0
+        },
+        "delay_cost_sensitivity": {
+          "cost_stress": {
+            "baseline_total_cost": 2.9285668242815683,
+            "cost_1_5x_total": 4.392850236422353,
+            "cost_2_0x_total": 5.857133648563137
+          },
+          "execution_delay": {
+            "baseline_days": 1,
+            "optimistic_same_close_mode": false
+          }
+        },
+        "benchmark_relative": {
+          "mean_excess_return": -0.02380342180402603,
+          "std_excess_return": 0.023001123129650754,
+          "count": 128.0,
+          "cumulative_excess_return": -3.046837990915332
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "data_quality": {
+          "manifest": {
+            "date_range": {
+              "start": "2010-01-04",
+              "end": "2025-03-31",
+              "trading_days": 3833
+            },
+            "symbol_count": 17,
+            "symbol_coverage": {
+              "min_symbols_per_day": 17,
+              "median_symbols_per_day": 17.0,
+              "max_symbols_per_day": 17,
+              "coverage_stability": 1.0
+            },
+            "benchmark_coverage": {
+              "count": 3833,
+              "coverage_ratio_vs_trading_days": 1.0
+            },
+            "metadata_coverage": {
+              "row_count": 17,
+              "sector_coverage": 1.0,
+              "industry_coverage": 1.0
+            },
+            "delisting_coverage": {
+              "count": 0
+            },
+            "symbol_mapping_coverage": {
+              "count": 17,
+              "raw_symbols": 17
+            },
+            "field_availability": {
+              "bars": {
+                "adv": 1.0,
+                "close": 1.0,
+                "daily_volatility": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "open": 1.0,
+                "volume": 1.0
+              },
+              "metadata": {
+                "beta": 1.0,
+                "country": 1.0,
+                "currency": 1.0,
+                "effective_from": 1.0,
+                "effective_to": 0.0,
+                "industry": 1.0,
+                "is_primary_listing": 1.0,
+                "market_cap": 1.0,
+                "region": 1.0,
+                "sector": 1.0,
+                "security_type": 1.0,
+                "symbol": 1.0
+              }
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample",
+            "uneven_symbol_coverage": false
+          },
+          "validation_summary": {
+            "bar_row_count": 65161,
+            "symbol_count": 17,
+            "benchmark_count": 3833,
+            "issue_count": 0,
+            "manifest": {
+              "date_range": {
+                "start": "2010-01-04",
+                "end": "2025-03-31",
+                "trading_days": 3833
+              },
+              "symbol_count": 17,
+              "symbol_coverage": {
+                "min_symbols_per_day": 17,
+                "median_symbols_per_day": 17.0,
+                "max_symbols_per_day": 17,
+                "coverage_stability": 1.0
+              },
+              "benchmark_coverage": {
+                "count": 3833,
+                "coverage_ratio_vs_trading_days": 1.0
+              },
+              "metadata_coverage": {
+                "row_count": 17,
+                "sector_coverage": 1.0,
+                "industry_coverage": 1.0
+              },
+              "delisting_coverage": {
+                "count": 0
+              },
+              "symbol_mapping_coverage": {
+                "count": 17,
+                "raw_symbols": 17
+              },
+              "field_availability": {
+                "bars": {
+                  "adv": 1.0,
+                  "close": 1.0,
+                  "daily_volatility": 1.0,
+                  "high": 1.0,
+                  "low": 1.0,
+                  "open": 1.0,
+                  "volume": 1.0
+                },
+                "metadata": {
+                  "beta": 1.0,
+                  "country": 1.0,
+                  "currency": 1.0,
+                  "effective_from": 1.0,
+                  "effective_to": 0.0,
+                  "industry": 1.0,
+                  "is_primary_listing": 1.0,
+                  "market_cap": 1.0,
+                  "region": 1.0,
+                  "sector": 1.0,
+                  "security_type": 1.0,
+                  "symbol": 1.0
+                }
+              },
+              "history_quality": "adequate_history",
+              "coverage_quality": "narrow_or_sample",
+              "uneven_symbol_coverage": false
+            },
+            "quality_metadata": {
+              "source": {
+                "provider": "Stooq daily CSV endpoint",
+                "bars_urls": {
+                  "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+                },
+                "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+                "download_window": {
+                  "start": "2010-01-04",
+                  "end": "2025-03-31"
+                }
+              },
+              "dataset_notes": {
+                "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+                "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+                "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+                "rejected_symbols": [],
+                "realism_limitations": [
+                  "public ETF data only",
+                  "empty delistings",
+                  "empty corporate actions",
+                  "benchmark is price index not total return"
+                ]
+              },
+              "row_counts": {
+                "bars": 65161,
+                "symbols": 17,
+                "benchmark_rows": 3833
+              },
+              "source_rows": [
+                {
+                  "symbol": "SPY",
+                  "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "QQQ",
+                  "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IWM",
+                  "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLK",
+                  "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLF",
+                  "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLE",
+                  "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLV",
+                  "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLI",
+                  "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLP",
+                  "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLY",
+                  "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLU",
+                  "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "TLT",
+                  "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IEF",
+                  "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "GLD",
+                  "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SLV",
+                  "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "USO",
+                  "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SHY",
+                  "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+                  "rows": 3833
+                }
+              ]
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample"
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample"
+        }
+      }
+    },
+    {
+      "candidate_id": "tsmom_ma_200_shy",
+      "params": {
+        "lookback": 200,
+        "rule": "moving_average_filter",
+        "defensive_asset": "SHY",
+        "rebalance_frequency": "M",
+        "execution_delay_days": 1
+      },
+      "metrics": {
+        "net_sharpe": -16.082778097095172,
+        "annualized_return": -6.193988013280207,
+        "max_drawdown": 0.958411410115381,
+        "t_stat": -11.462141993684245
+      },
+      "diagnostics": {
+        "num_signal_days": 129.0,
+        "num_backtest_days": 128.0,
+        "average_turnover": 0.486934202949828,
+        "time_in_market": 1.0,
+        "average_position_count": 10.78125,
+        "average_gross_exposure": 1.0,
+        "long_short_attribution": {
+          "long_total": -3.1461526416661365,
+          "short_total": 0.0,
+          "net_total": -3.1461526416661365,
+          "one_sided_pnl_ratio": 0.0
+        },
+        "delay_cost_sensitivity": {
+          "cost_stress": {
+            "baseline_total_cost": 3.1022419759934485,
+            "cost_1_5x_total": 4.653362963990173,
+            "cost_2_0x_total": 6.204483951986897
+          },
+          "execution_delay": {
+            "baseline_days": 1,
+            "optimistic_same_close_mode": false
+          }
+        },
+        "benchmark_relative": {
+          "mean_excess_return": -0.02517636764190665,
+          "std_excess_return": 0.025222910949273585,
+          "count": 128.0,
+          "cumulative_excess_return": -3.2225750581640513
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "data_quality": {
+          "manifest": {
+            "date_range": {
+              "start": "2010-01-04",
+              "end": "2025-03-31",
+              "trading_days": 3833
+            },
+            "symbol_count": 17,
+            "symbol_coverage": {
+              "min_symbols_per_day": 17,
+              "median_symbols_per_day": 17.0,
+              "max_symbols_per_day": 17,
+              "coverage_stability": 1.0
+            },
+            "benchmark_coverage": {
+              "count": 3833,
+              "coverage_ratio_vs_trading_days": 1.0
+            },
+            "metadata_coverage": {
+              "row_count": 17,
+              "sector_coverage": 1.0,
+              "industry_coverage": 1.0
+            },
+            "delisting_coverage": {
+              "count": 0
+            },
+            "symbol_mapping_coverage": {
+              "count": 17,
+              "raw_symbols": 17
+            },
+            "field_availability": {
+              "bars": {
+                "adv": 1.0,
+                "close": 1.0,
+                "daily_volatility": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "open": 1.0,
+                "volume": 1.0
+              },
+              "metadata": {
+                "beta": 1.0,
+                "country": 1.0,
+                "currency": 1.0,
+                "effective_from": 1.0,
+                "effective_to": 0.0,
+                "industry": 1.0,
+                "is_primary_listing": 1.0,
+                "market_cap": 1.0,
+                "region": 1.0,
+                "sector": 1.0,
+                "security_type": 1.0,
+                "symbol": 1.0
+              }
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample",
+            "uneven_symbol_coverage": false
+          },
+          "validation_summary": {
+            "bar_row_count": 65161,
+            "symbol_count": 17,
+            "benchmark_count": 3833,
+            "issue_count": 0,
+            "manifest": {
+              "date_range": {
+                "start": "2010-01-04",
+                "end": "2025-03-31",
+                "trading_days": 3833
+              },
+              "symbol_count": 17,
+              "symbol_coverage": {
+                "min_symbols_per_day": 17,
+                "median_symbols_per_day": 17.0,
+                "max_symbols_per_day": 17,
+                "coverage_stability": 1.0
+              },
+              "benchmark_coverage": {
+                "count": 3833,
+                "coverage_ratio_vs_trading_days": 1.0
+              },
+              "metadata_coverage": {
+                "row_count": 17,
+                "sector_coverage": 1.0,
+                "industry_coverage": 1.0
+              },
+              "delisting_coverage": {
+                "count": 0
+              },
+              "symbol_mapping_coverage": {
+                "count": 17,
+                "raw_symbols": 17
+              },
+              "field_availability": {
+                "bars": {
+                  "adv": 1.0,
+                  "close": 1.0,
+                  "daily_volatility": 1.0,
+                  "high": 1.0,
+                  "low": 1.0,
+                  "open": 1.0,
+                  "volume": 1.0
+                },
+                "metadata": {
+                  "beta": 1.0,
+                  "country": 1.0,
+                  "currency": 1.0,
+                  "effective_from": 1.0,
+                  "effective_to": 0.0,
+                  "industry": 1.0,
+                  "is_primary_listing": 1.0,
+                  "market_cap": 1.0,
+                  "region": 1.0,
+                  "sector": 1.0,
+                  "security_type": 1.0,
+                  "symbol": 1.0
+                }
+              },
+              "history_quality": "adequate_history",
+              "coverage_quality": "narrow_or_sample",
+              "uneven_symbol_coverage": false
+            },
+            "quality_metadata": {
+              "source": {
+                "provider": "Stooq daily CSV endpoint",
+                "bars_urls": {
+                  "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+                },
+                "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+                "download_window": {
+                  "start": "2010-01-04",
+                  "end": "2025-03-31"
+                }
+              },
+              "dataset_notes": {
+                "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+                "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+                "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+                "rejected_symbols": [],
+                "realism_limitations": [
+                  "public ETF data only",
+                  "empty delistings",
+                  "empty corporate actions",
+                  "benchmark is price index not total return"
+                ]
+              },
+              "row_counts": {
+                "bars": 65161,
+                "symbols": 17,
+                "benchmark_rows": 3833
+              },
+              "source_rows": [
+                {
+                  "symbol": "SPY",
+                  "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "QQQ",
+                  "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IWM",
+                  "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLK",
+                  "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLF",
+                  "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLE",
+                  "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLV",
+                  "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLI",
+                  "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLP",
+                  "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLY",
+                  "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLU",
+                  "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "TLT",
+                  "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IEF",
+                  "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "GLD",
+                  "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SLV",
+                  "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "USO",
+                  "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SHY",
+                  "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+                  "rows": 3833
+                }
+              ]
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample"
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample"
+        }
+      }
+    },
+    {
+      "candidate_id": "tsmom_dual_63_252_cash",
+      "params": {
+        "lookback": 252,
+        "rule": "dual_horizon_agreement",
+        "defensive_asset": "CASH",
+        "rebalance_frequency": "M",
+        "execution_delay_days": 1
+      },
+      "metrics": {
+        "net_sharpe": -15.61948024785446,
+        "annualized_return": -8.690368811772537,
+        "max_drawdown": 0.9897371110090997,
+        "t_stat": -11.131951170848442
+      },
+      "diagnostics": {
+        "num_signal_days": 129.0,
+        "num_backtest_days": 128.0,
+        "average_turnover": 0.6987481268731268,
+        "time_in_market": 0.9453125,
+        "average_position_count": 8.234375,
+        "average_gross_exposure": 0.9453125,
+        "long_short_attribution": {
+          "long_total": -4.414155586932082,
+          "short_total": 0.0,
+          "net_total": -4.414155586932082,
+          "one_sided_pnl_ratio": 0.0
+        },
+        "delay_cost_sensitivity": {
+          "cost_stress": {
+            "baseline_total_cost": 4.405316741527572,
+            "cost_1_5x_total": 6.607975112291357,
+            "cost_2_0x_total": 8.810633483055144
+          },
+          "execution_delay": {
+            "baseline_days": 1,
+            "optimistic_same_close_mode": false
+          }
+        },
+        "benchmark_relative": {
+          "mean_excess_return": -0.03508264065179685,
+          "std_excess_return": 0.03607537706041613,
+          "count": 128.0,
+          "cumulative_excess_return": -4.490578003429997
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "data_quality": {
+          "manifest": {
+            "date_range": {
+              "start": "2010-01-04",
+              "end": "2025-03-31",
+              "trading_days": 3833
+            },
+            "symbol_count": 17,
+            "symbol_coverage": {
+              "min_symbols_per_day": 17,
+              "median_symbols_per_day": 17.0,
+              "max_symbols_per_day": 17,
+              "coverage_stability": 1.0
+            },
+            "benchmark_coverage": {
+              "count": 3833,
+              "coverage_ratio_vs_trading_days": 1.0
+            },
+            "metadata_coverage": {
+              "row_count": 17,
+              "sector_coverage": 1.0,
+              "industry_coverage": 1.0
+            },
+            "delisting_coverage": {
+              "count": 0
+            },
+            "symbol_mapping_coverage": {
+              "count": 17,
+              "raw_symbols": 17
+            },
+            "field_availability": {
+              "bars": {
+                "adv": 1.0,
+                "close": 1.0,
+                "daily_volatility": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "open": 1.0,
+                "volume": 1.0
+              },
+              "metadata": {
+                "beta": 1.0,
+                "country": 1.0,
+                "currency": 1.0,
+                "effective_from": 1.0,
+                "effective_to": 0.0,
+                "industry": 1.0,
+                "is_primary_listing": 1.0,
+                "market_cap": 1.0,
+                "region": 1.0,
+                "sector": 1.0,
+                "security_type": 1.0,
+                "symbol": 1.0
+              }
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample",
+            "uneven_symbol_coverage": false
+          },
+          "validation_summary": {
+            "bar_row_count": 65161,
+            "symbol_count": 17,
+            "benchmark_count": 3833,
+            "issue_count": 0,
+            "manifest": {
+              "date_range": {
+                "start": "2010-01-04",
+                "end": "2025-03-31",
+                "trading_days": 3833
+              },
+              "symbol_count": 17,
+              "symbol_coverage": {
+                "min_symbols_per_day": 17,
+                "median_symbols_per_day": 17.0,
+                "max_symbols_per_day": 17,
+                "coverage_stability": 1.0
+              },
+              "benchmark_coverage": {
+                "count": 3833,
+                "coverage_ratio_vs_trading_days": 1.0
+              },
+              "metadata_coverage": {
+                "row_count": 17,
+                "sector_coverage": 1.0,
+                "industry_coverage": 1.0
+              },
+              "delisting_coverage": {
+                "count": 0
+              },
+              "symbol_mapping_coverage": {
+                "count": 17,
+                "raw_symbols": 17
+              },
+              "field_availability": {
+                "bars": {
+                  "adv": 1.0,
+                  "close": 1.0,
+                  "daily_volatility": 1.0,
+                  "high": 1.0,
+                  "low": 1.0,
+                  "open": 1.0,
+                  "volume": 1.0
+                },
+                "metadata": {
+                  "beta": 1.0,
+                  "country": 1.0,
+                  "currency": 1.0,
+                  "effective_from": 1.0,
+                  "effective_to": 0.0,
+                  "industry": 1.0,
+                  "is_primary_listing": 1.0,
+                  "market_cap": 1.0,
+                  "region": 1.0,
+                  "sector": 1.0,
+                  "security_type": 1.0,
+                  "symbol": 1.0
+                }
+              },
+              "history_quality": "adequate_history",
+              "coverage_quality": "narrow_or_sample",
+              "uneven_symbol_coverage": false
+            },
+            "quality_metadata": {
+              "source": {
+                "provider": "Stooq daily CSV endpoint",
+                "bars_urls": {
+                  "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+                },
+                "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+                "download_window": {
+                  "start": "2010-01-04",
+                  "end": "2025-03-31"
+                }
+              },
+              "dataset_notes": {
+                "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+                "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+                "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+                "rejected_symbols": [],
+                "realism_limitations": [
+                  "public ETF data only",
+                  "empty delistings",
+                  "empty corporate actions",
+                  "benchmark is price index not total return"
+                ]
+              },
+              "row_counts": {
+                "bars": 65161,
+                "symbols": 17,
+                "benchmark_rows": 3833
+              },
+              "source_rows": [
+                {
+                  "symbol": "SPY",
+                  "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "QQQ",
+                  "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IWM",
+                  "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLK",
+                  "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLF",
+                  "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLE",
+                  "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLV",
+                  "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLI",
+                  "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLP",
+                  "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLY",
+                  "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLU",
+                  "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "TLT",
+                  "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IEF",
+                  "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "GLD",
+                  "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SLV",
+                  "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "USO",
+                  "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SHY",
+                  "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+                  "rows": 3833
+                }
+              ]
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample"
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample"
+        }
+      }
+    },
+    {
+      "candidate_id": "tsmom_dual_63_252_shy",
+      "params": {
+        "lookback": 252,
+        "rule": "dual_horizon_agreement",
+        "defensive_asset": "SHY",
+        "rebalance_frequency": "M",
+        "execution_delay_days": 1
+      },
+      "metrics": {
+        "net_sharpe": -15.93737227492805,
+        "annualized_return": -8.862832551123217,
+        "max_drawdown": 0.9901893640839513,
+        "t_stat": -11.358511752047761
+      },
+      "diagnostics": {
+        "num_signal_days": 129.0,
+        "num_backtest_days": 128.0,
+        "average_turnover": 0.7143731268731268,
+        "time_in_market": 1.0,
+        "average_position_count": 8.2890625,
+        "average_gross_exposure": 1.0,
+        "long_short_attribution": {
+          "long_total": -4.50175621644354,
+          "short_total": 0.0,
+          "net_total": -4.50175621644354,
+          "one_sided_pnl_ratio": 0.0
+        },
+        "delay_cost_sensitivity": {
+          "cost_stress": {
+            "baseline_total_cost": 4.4897549429860355,
+            "cost_1_5x_total": 6.734632414479052,
+            "cost_2_0x_total": 8.979509885972071
+          },
+          "execution_delay": {
+            "baseline_days": 1,
+            "optimistic_same_close_mode": false
+          }
+        },
+        "benchmark_relative": {
+          "mean_excess_return": -0.03576702056985512,
+          "std_excess_return": 0.03627698829322821,
+          "count": 128.0,
+          "cumulative_excess_return": -4.578178632941455
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "data_quality": {
+          "manifest": {
+            "date_range": {
+              "start": "2010-01-04",
+              "end": "2025-03-31",
+              "trading_days": 3833
+            },
+            "symbol_count": 17,
+            "symbol_coverage": {
+              "min_symbols_per_day": 17,
+              "median_symbols_per_day": 17.0,
+              "max_symbols_per_day": 17,
+              "coverage_stability": 1.0
+            },
+            "benchmark_coverage": {
+              "count": 3833,
+              "coverage_ratio_vs_trading_days": 1.0
+            },
+            "metadata_coverage": {
+              "row_count": 17,
+              "sector_coverage": 1.0,
+              "industry_coverage": 1.0
+            },
+            "delisting_coverage": {
+              "count": 0
+            },
+            "symbol_mapping_coverage": {
+              "count": 17,
+              "raw_symbols": 17
+            },
+            "field_availability": {
+              "bars": {
+                "adv": 1.0,
+                "close": 1.0,
+                "daily_volatility": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "open": 1.0,
+                "volume": 1.0
+              },
+              "metadata": {
+                "beta": 1.0,
+                "country": 1.0,
+                "currency": 1.0,
+                "effective_from": 1.0,
+                "effective_to": 0.0,
+                "industry": 1.0,
+                "is_primary_listing": 1.0,
+                "market_cap": 1.0,
+                "region": 1.0,
+                "sector": 1.0,
+                "security_type": 1.0,
+                "symbol": 1.0
+              }
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample",
+            "uneven_symbol_coverage": false
+          },
+          "validation_summary": {
+            "bar_row_count": 65161,
+            "symbol_count": 17,
+            "benchmark_count": 3833,
+            "issue_count": 0,
+            "manifest": {
+              "date_range": {
+                "start": "2010-01-04",
+                "end": "2025-03-31",
+                "trading_days": 3833
+              },
+              "symbol_count": 17,
+              "symbol_coverage": {
+                "min_symbols_per_day": 17,
+                "median_symbols_per_day": 17.0,
+                "max_symbols_per_day": 17,
+                "coverage_stability": 1.0
+              },
+              "benchmark_coverage": {
+                "count": 3833,
+                "coverage_ratio_vs_trading_days": 1.0
+              },
+              "metadata_coverage": {
+                "row_count": 17,
+                "sector_coverage": 1.0,
+                "industry_coverage": 1.0
+              },
+              "delisting_coverage": {
+                "count": 0
+              },
+              "symbol_mapping_coverage": {
+                "count": 17,
+                "raw_symbols": 17
+              },
+              "field_availability": {
+                "bars": {
+                  "adv": 1.0,
+                  "close": 1.0,
+                  "daily_volatility": 1.0,
+                  "high": 1.0,
+                  "low": 1.0,
+                  "open": 1.0,
+                  "volume": 1.0
+                },
+                "metadata": {
+                  "beta": 1.0,
+                  "country": 1.0,
+                  "currency": 1.0,
+                  "effective_from": 1.0,
+                  "effective_to": 0.0,
+                  "industry": 1.0,
+                  "is_primary_listing": 1.0,
+                  "market_cap": 1.0,
+                  "region": 1.0,
+                  "sector": 1.0,
+                  "security_type": 1.0,
+                  "symbol": 1.0
+                }
+              },
+              "history_quality": "adequate_history",
+              "coverage_quality": "narrow_or_sample",
+              "uneven_symbol_coverage": false
+            },
+            "quality_metadata": {
+              "source": {
+                "provider": "Stooq daily CSV endpoint",
+                "bars_urls": {
+                  "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+                },
+                "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+                "download_window": {
+                  "start": "2010-01-04",
+                  "end": "2025-03-31"
+                }
+              },
+              "dataset_notes": {
+                "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+                "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+                "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+                "rejected_symbols": [],
+                "realism_limitations": [
+                  "public ETF data only",
+                  "empty delistings",
+                  "empty corporate actions",
+                  "benchmark is price index not total return"
+                ]
+              },
+              "row_counts": {
+                "bars": 65161,
+                "symbols": 17,
+                "benchmark_rows": 3833
+              },
+              "source_rows": [
+                {
+                  "symbol": "SPY",
+                  "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "QQQ",
+                  "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IWM",
+                  "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLK",
+                  "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLF",
+                  "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLE",
+                  "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLV",
+                  "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLI",
+                  "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLP",
+                  "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLY",
+                  "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "XLU",
+                  "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "TLT",
+                  "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "IEF",
+                  "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "GLD",
+                  "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SLV",
+                  "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "USO",
+                  "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                  "rows": 3833
+                },
+                {
+                  "symbol": "SHY",
+                  "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+                  "rows": 3833
+                }
+              ]
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample"
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample"
+        }
+      }
+    }
+  ],
+  "best_candidate": {
+    "candidate_id": "tsmom_dual_63_252_cash",
+    "params": {
+      "lookback": 252,
+      "rule": "dual_horizon_agreement",
+      "defensive_asset": "CASH",
+      "rebalance_frequency": "M",
+      "execution_delay_days": 1
+    },
+    "metrics": {
+      "net_sharpe": -15.61948024785446,
+      "annualized_return": -8.690368811772537,
+      "max_drawdown": 0.9897371110090997,
+      "t_stat": -11.131951170848442
+    },
+    "diagnostics": {
+      "num_signal_days": 129.0,
+      "num_backtest_days": 128.0,
+      "average_turnover": 0.6987481268731268,
+      "time_in_market": 0.9453125,
+      "average_position_count": 8.234375,
+      "average_gross_exposure": 0.9453125,
+      "long_short_attribution": {
+        "long_total": -4.414155586932082,
+        "short_total": 0.0,
+        "net_total": -4.414155586932082,
+        "one_sided_pnl_ratio": 0.0
+      },
+      "delay_cost_sensitivity": {
+        "cost_stress": {
+          "baseline_total_cost": 4.405316741527572,
+          "cost_1_5x_total": 6.607975112291357,
+          "cost_2_0x_total": 8.810633483055144
+        },
+        "execution_delay": {
+          "baseline_days": 1,
+          "optimistic_same_close_mode": false
+        }
+      },
+      "benchmark_relative": {
+        "mean_excess_return": -0.03508264065179685,
+        "std_excess_return": 0.03607537706041613,
+        "count": 128.0,
+        "cumulative_excess_return": -4.490578003429997
+      },
+      "history_quality": "adequate_history",
+      "coverage_quality": "narrow_or_sample",
+      "data_quality": {
+        "manifest": {
+          "date_range": {
+            "start": "2010-01-04",
+            "end": "2025-03-31",
+            "trading_days": 3833
+          },
+          "symbol_count": 17,
+          "symbol_coverage": {
+            "min_symbols_per_day": 17,
+            "median_symbols_per_day": 17.0,
+            "max_symbols_per_day": 17,
+            "coverage_stability": 1.0
+          },
+          "benchmark_coverage": {
+            "count": 3833,
+            "coverage_ratio_vs_trading_days": 1.0
+          },
+          "metadata_coverage": {
+            "row_count": 17,
+            "sector_coverage": 1.0,
+            "industry_coverage": 1.0
+          },
+          "delisting_coverage": {
+            "count": 0
+          },
+          "symbol_mapping_coverage": {
+            "count": 17,
+            "raw_symbols": 17
+          },
+          "field_availability": {
+            "bars": {
+              "adv": 1.0,
+              "close": 1.0,
+              "daily_volatility": 1.0,
+              "high": 1.0,
+              "low": 1.0,
+              "open": 1.0,
+              "volume": 1.0
+            },
+            "metadata": {
+              "beta": 1.0,
+              "country": 1.0,
+              "currency": 1.0,
+              "effective_from": 1.0,
+              "effective_to": 0.0,
+              "industry": 1.0,
+              "is_primary_listing": 1.0,
+              "market_cap": 1.0,
+              "region": 1.0,
+              "sector": 1.0,
+              "security_type": 1.0,
+              "symbol": 1.0
+            }
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample",
+          "uneven_symbol_coverage": false
+        },
+        "validation_summary": {
+          "bar_row_count": 65161,
+          "symbol_count": 17,
+          "benchmark_count": 3833,
+          "issue_count": 0,
+          "manifest": {
+            "date_range": {
+              "start": "2010-01-04",
+              "end": "2025-03-31",
+              "trading_days": 3833
+            },
+            "symbol_count": 17,
+            "symbol_coverage": {
+              "min_symbols_per_day": 17,
+              "median_symbols_per_day": 17.0,
+              "max_symbols_per_day": 17,
+              "coverage_stability": 1.0
+            },
+            "benchmark_coverage": {
+              "count": 3833,
+              "coverage_ratio_vs_trading_days": 1.0
+            },
+            "metadata_coverage": {
+              "row_count": 17,
+              "sector_coverage": 1.0,
+              "industry_coverage": 1.0
+            },
+            "delisting_coverage": {
+              "count": 0
+            },
+            "symbol_mapping_coverage": {
+              "count": 17,
+              "raw_symbols": 17
+            },
+            "field_availability": {
+              "bars": {
+                "adv": 1.0,
+                "close": 1.0,
+                "daily_volatility": 1.0,
+                "high": 1.0,
+                "low": 1.0,
+                "open": 1.0,
+                "volume": 1.0
+              },
+              "metadata": {
+                "beta": 1.0,
+                "country": 1.0,
+                "currency": 1.0,
+                "effective_from": 1.0,
+                "effective_to": 0.0,
+                "industry": 1.0,
+                "is_primary_listing": 1.0,
+                "market_cap": 1.0,
+                "region": 1.0,
+                "sector": 1.0,
+                "security_type": 1.0,
+                "symbol": 1.0
+              }
+            },
+            "history_quality": "adequate_history",
+            "coverage_quality": "narrow_or_sample",
+            "uneven_symbol_coverage": false
+          },
+          "quality_metadata": {
+            "source": {
+              "provider": "Stooq daily CSV endpoint",
+              "bars_urls": {
+                "SPY": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                "QQQ": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                "IWM": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                "XLK": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                "XLF": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                "XLE": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                "XLV": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                "XLI": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                "XLP": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                "XLY": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                "XLU": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                "TLT": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                "IEF": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                "GLD": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                "SLV": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                "USO": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                "SHY": "https://stooq.com/q/d/l/?s=shy.us&i=d"
+              },
+              "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+              "download_window": {
+                "start": "2010-01-04",
+                "end": "2025-03-31"
+              }
+            },
+            "dataset_notes": {
+              "universe": "Liquid US-listed ETF trend universe with broad equity, sectors, rates, commodity, and cash proxy sleeves.",
+              "construction_method": "Use the common-date intersection across the ETF list and ^SPX benchmark to preserve a broad, stable liquid ETF universe on aligned daily history.",
+              "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq.",
+              "rejected_symbols": [],
+              "realism_limitations": [
+                "public ETF data only",
+                "empty delistings",
+                "empty corporate actions",
+                "benchmark is price index not total return"
+              ]
+            },
+            "row_counts": {
+              "bars": 65161,
+              "symbols": 17,
+              "benchmark_rows": 3833
+            },
+            "source_rows": [
+              {
+                "symbol": "SPY",
+                "url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "QQQ",
+                "url": "https://stooq.com/q/d/l/?s=qqq.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "IWM",
+                "url": "https://stooq.com/q/d/l/?s=iwm.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLK",
+                "url": "https://stooq.com/q/d/l/?s=xlk.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLF",
+                "url": "https://stooq.com/q/d/l/?s=xlf.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLE",
+                "url": "https://stooq.com/q/d/l/?s=xle.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLV",
+                "url": "https://stooq.com/q/d/l/?s=xlv.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLI",
+                "url": "https://stooq.com/q/d/l/?s=xli.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLP",
+                "url": "https://stooq.com/q/d/l/?s=xlp.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLY",
+                "url": "https://stooq.com/q/d/l/?s=xly.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "XLU",
+                "url": "https://stooq.com/q/d/l/?s=xlu.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "TLT",
+                "url": "https://stooq.com/q/d/l/?s=tlt.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "IEF",
+                "url": "https://stooq.com/q/d/l/?s=ief.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "GLD",
+                "url": "https://stooq.com/q/d/l/?s=gld.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "SLV",
+                "url": "https://stooq.com/q/d/l/?s=slv.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "USO",
+                "url": "https://stooq.com/q/d/l/?s=uso.us&i=d",
+                "rows": 3833
+              },
+              {
+                "symbol": "SHY",
+                "url": "https://stooq.com/q/d/l/?s=shy.us&i=d",
+                "rows": 3833
+              }
+            ]
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample"
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample"
+      }
+    }
+  }
+}
