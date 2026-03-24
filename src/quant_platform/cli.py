@@ -71,12 +71,16 @@ def run_paper_daily(args: argparse.Namespace) -> int:
 
 
 def run_residual_momentum_cycle_cli(args: argparse.Namespace) -> int:
+    print({"stage": "bundle_load_start", "data_root": args.data_root})
     bundle = LocalJsonDataAdapter(args.data_root).load_bundle()
+    print({"stage": "bundle_load_done", "bars": len(bundle.bars), "benchmark": len(bundle.benchmark), "metadata": len(bundle.metadata)})
     registry = load_json(args.registry)
     result = run_residual_momentum_cycle(bundle, BaselineResearchConfig(), ResidualMomentumCycleConfig(lookbacks=tuple(args.lookbacks), skip_windows=tuple(args.skip_windows), residual_models=tuple(args.residual_models), seed=args.seed, stage=args.stage, touch_final_test=args.touch_final_test, final_test_reason=args.final_test_reason), registry=registry)
     export_payload = {"cycle_label": "new_research_cycle", "experiment_id": result.experiment_id, "candidate_family": result.candidate_family, "multiple_testing": result.multiple_testing, "overfitting": result.overfitting, "comparison": result.comparison, "market_tag": "US_equities_control_env", "final_test_state": result.comparison["aggregate"]["final_test_state"]}
     if args.export_path:
+        print({"stage": "export_write_start", "path": args.export_path})
         save_json(args.export_path, export_payload)
+        print({"stage": "export_write_done", "path": args.export_path})
     save_json(args.registry, result.registry)
     print({"cycle_label": "new_research_cycle", "experiment_id": result.experiment_id, "best_candidate": result.comparison["best_residual_momentum_candidate"], "final_test_state": result.comparison["aggregate"]["final_test_state"], "export_path": args.export_path})
     return 0

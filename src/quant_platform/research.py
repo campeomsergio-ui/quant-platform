@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from time import perf_counter
 from typing import Any
 
 import pandas as pd
@@ -30,6 +31,11 @@ def _compact_data_quality(summary: dict[str, Any]) -> dict[str, Any]:
         "date_range": manifest.get("date_range", {}),
         "symbol_coverage": manifest.get("symbol_coverage", {}),
     }
+
+
+def _trace(stage: str, **fields: Any) -> None:
+    payload = {"stage": stage, **fields}
+    print(payload, flush=True)
 
 
 @dataclass(frozen=True)
@@ -174,9 +180,16 @@ def _candidate_series(run: ResearchRunResult) -> pd.Series:
     return normalize_return_series(trend, min_history=2)
 
 
-def _evaluate_residual_momentum_candidate(bundle: DataBundle, lookback: int, skip_window: int, residual_model: str, holding_period: int, execution_delay_days: int) -> ResearchRunResult:
+def _evaluate_residual_momentum_candidate(bundle: DataBundle, lookback: int, skip_window: int, residual_model: str, holding_period: int, execution_delay_days: int, trace_label: str | None = None) -> ResearchRunResult:
+    label = trace_label or _candidate_id(lookback, skip_window, residual_model)
+    t0 = perf_counter()
+    _trace("signal_construction_start", trace_label=label, lookback=lookback, skip_window=skip_window, residual_model=residual_model)
     signals = build_residual_momentum_signals(bundle, lookback, skip_window, residual_model, execution_delay_days)
+    _trace("signal_construction_done", trace_label=label, elapsed_seconds=round(perf_counter() - t0, 3), num_signal_days=len(signals))
+    t1 = perf_counter()
+    _trace("backtest_start", trace_label=label)
     run = _run_strategy(bundle, signals, holding_period)
+    _trace("backtest_done", trace_label=label, elapsed_seconds=round(perf_counter() - t1, 3), num_backtest_days=run.diagnostics.get("num_backtest_days"))
     run.diagnostics["cycle_label"] = "new_research_cycle"
     run.diagnostics["strategy_label"] = "residual_momentum"
     run.diagnostics["candidate_params"] = {"lookback": lookback, "skip_window": skip_window, "residual_model": residual_model}
@@ -191,29 +204,39 @@ def _evaluate_residual_momentum_candidate(bundle: DataBundle, lookback: int, ski
 
 def _evaluate_folded_candidates(bundle: DataBundle, cycle_config: ResidualMomentumCycleConfig) -> dict[str, dict[str, ResearchRunResult]]:
     dates = pd.DatetimeIndex(sorted(bundle.bars.index.get_level_values("date").unique()))
+    _trace("fold_generation_start", date_count=len(dates))
+    t_fold_gen = perf_counter()
     folds = generate_folds(dates, cycle_config.walk_forward)
     if not folds and len(dates) >= 2:
         from quant_platform.data_contracts import WalkForwardFold
 
         folds = [WalkForwardFold(train_start=dates[0], train_end=dates[max(0, len(dates) // 2 - 1)], validation_start=dates[max(1, len(dates) // 2)], validation_end=dates[-1], fold_id="exploratory_local_sample_fold")]
+    _trace("fold_generation_done", elapsed_seconds=round(perf_counter() - t_fold_gen, 3), fold_count=len(folds))
     fold_results: dict[str, dict[str, ResearchRunResult]] = {}
     for fold in folds:
+        fold_t0 = perf_counter()
+        _trace("fold_start", fold_id=fold.fold_id, validation_start=str(fold.validation_start), validation_end=str(fold.validation_end))
         validation_bundle = _subset_bundle(bundle, fold.validation_start, fold.validation_end)
         per_fold: dict[str, ResearchRunResult] = {}
         for lookback in cycle_config.lookbacks:
             for skip_window in cycle_config.skip_windows:
                 for residual_model in cycle_config.residual_models:
                     cid = _candidate_id(lookback, skip_window, residual_model)
-                    run = _evaluate_residual_momentum_candidate(validation_bundle, lookback, skip_window, residual_model, cycle_config.holding_period, cycle_config.execution_delay_days)
+                    _trace("candidate_start", fold_id=fold.fold_id, candidate_id=cid)
+                    run = _evaluate_residual_momentum_candidate(validation_bundle, lookback, skip_window, residual_model, cycle_config.holding_period, cycle_config.execution_delay_days, trace_label=f"fold:{fold.fold_id}:{cid}")
                     run.diagnostics["fold_id"] = fold.fold_id
                     run.diagnostics["fold_history_quality"] = run.diagnostics.get("history_quality")
                     run.diagnostics["fold_coverage_quality"] = run.diagnostics.get("coverage_quality")
                     per_fold[cid] = run
+                    _trace("candidate_done", fold_id=fold.fold_id, candidate_id=cid, elapsed_seconds=round(perf_counter() - fold_t0, 3))
         fold_results[fold.fold_id] = per_fold
+        _trace("fold_done", fold_id=fold.fold_id, elapsed_seconds=round(perf_counter() - fold_t0, 3), candidate_count=len(per_fold))
     return fold_results
 
 
 def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineResearchConfig, cycle_config: ResidualMomentumCycleConfig, registry: dict[str, Any] | None = None) -> ResidualMomentumCycleResult:
+    cycle_t0 = perf_counter()
+    _trace("residual_cycle_start", lookbacks=list(cycle_config.lookbacks), skip_windows=list(cycle_config.skip_windows), residual_models=list(cycle_config.residual_models))
     registry_payload = {} if registry is None else dict(registry)
     spec = {"cycle": cycle_config.registry_experiment_name, "family": "residual_momentum", "lookbacks": list(cycle_config.lookbacks), "skip_windows": list(cycle_config.skip_windows), "residual_models": list(cycle_config.residual_models), "market_tag": "US_equities_control_env"}
     plan = {"discipline": "same_as_baseline", "locked_test": True, "multiple_testing": "white_reality_check", "overfitting": "pbo", "walk_forward": {"train_years": cycle_config.walk_forward.train_years, "validation_years": cycle_config.walk_forward.validation_years, "step_years": cycle_config.walk_forward.step_years, "final_test_start": cycle_config.walk_forward.final_test_start, "final_test_end": cycle_config.walk_forward.final_test_end}}
@@ -240,7 +263,9 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
     candidate_family: list[dict[str, Any]] = []
     candidate_returns: dict[str, pd.Series] = {}
     pbo_frame: dict[str, list[float]] = {}
+    _trace("baseline_comparison_start")
     baseline_result = run_baseline_research(bundle, baseline_config)
+    _trace("baseline_comparison_done", elapsed_seconds=round(perf_counter() - cycle_t0, 3), baseline_backtest_days=baseline_result.diagnostics.get("num_backtest_days"))
     fold_results = _evaluate_folded_candidates(bundle, cycle_config)
     baseline_series = _candidate_series(baseline_result)
 
@@ -250,8 +275,10 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
                 cid = _candidate_id(lookback, skip_window, residual_model)
                 params = {"lookback": lookback, "skip_window": skip_window, "residual_model": residual_model, "market_tag": "US_equities_control_env"}
                 registry_payload = append_candidate_record(registry_payload, record.experiment_id, CandidateRecord(candidate_id=cid, params=params, family_name="residual_momentum_cycle", stage=cycle_config.stage))
-                run = _evaluate_residual_momentum_candidate(bundle, lookback, skip_window, residual_model, cycle_config.holding_period, cycle_config.execution_delay_days)
+                _trace("candidate_start", fold_id="full_bundle", candidate_id=cid)
+                run = _evaluate_residual_momentum_candidate(bundle, lookback, skip_window, residual_model, cycle_config.holding_period, cycle_config.execution_delay_days, trace_label=f"full_bundle:{cid}")
                 candidate_results[cid] = run
+                _trace("candidate_done", fold_id="full_bundle", candidate_id=cid, elapsed_seconds=round(perf_counter() - cycle_t0, 3))
                 candidate_family.append({"candidate_id": cid, **params})
                 candidate_returns[cid] = _candidate_series(run)
                 per_fold_sharpes = [fold_results[fold_id][cid].metrics["net_sharpe"] for fold_id in fold_results if cid in fold_results[fold_id]]
@@ -260,10 +287,16 @@ def run_residual_momentum_cycle(bundle: DataBundle, baseline_config: BaselineRes
                     cleaned.append(cleaned[0])
                 pbo_frame[cid] = cleaned
 
+    _trace("multiple_testing_start", candidate_count=len(candidate_returns))
+    mt_t0 = perf_counter()
     differentials = build_candidate_differentials(candidate_returns, baseline_series, min_history=8)
     rc = run_white_reality_check(candidate_returns, baseline_series, RealityCheckConfig(seed=cycle_config.seed, bootstrap_iterations=50, minHistory=8)) if candidate_returns else None
+    _trace("multiple_testing_done", elapsed_seconds=round(perf_counter() - mt_t0, 3))
     pbo_matrix = pd.DataFrame(pbo_frame).fillna(0.0) if pbo_frame else pd.DataFrame()
+    _trace("overfitting_start", shape=list(pbo_matrix.shape))
+    of_t0 = perf_counter()
     pbo = estimate_pbo(pbo_matrix, OverfittingConfig(seed=cycle_config.seed)) if not pbo_matrix.empty else None
+    _trace("overfitting_done", elapsed_seconds=round(perf_counter() - of_t0, 3))
     best_candidate = max(candidate_results.items(), key=lambda item: item[1].metrics["net_sharpe"])[0] if candidate_results else ""
     fold_comparison = {fold_id: {"baseline": baseline_result.metrics, "residual_momentum": {cid: run.metrics for cid, run in fold_map.items()}, "stress": {cid: run.diagnostics.get("delay_cost_sensitivity", {}) for cid, run in fold_map.items()}, "benchmark_differentials": {cid: {"excess_annualized_return": float(run.metrics["annualized_return"] - baseline_result.metrics["annualized_return"]), "excess_sharpe": float(run.metrics["net_sharpe"] - baseline_result.metrics["net_sharpe"])} for cid, run in fold_map.items()}} for fold_id, fold_map in fold_results.items()}
     final_test_state = registry_payload.get("experiments", {}).get(record.experiment_id, {})
