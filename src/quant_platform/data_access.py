@@ -6,7 +6,7 @@ from typing import Any, Protocol
 
 import pandas as pd
 
-from quant_platform.io import load_json
+from quant_platform.io import load_json, save_json
 
 
 @dataclass(frozen=True)
@@ -87,6 +87,66 @@ class LocalTableDataAdapter:
 
 def _load_optional_json(path: Path) -> dict[str, Any]:
     return load_json(str(path)) if path.exists() else {}
+
+
+def import_external_table_bundle(source_root: str, dest_root: str, *, source_name: str, notes: str = "", benchmark_name: str = "", preferred_format: str = "auto") -> dict[str, Any]:
+    source = Path(source_root)
+    dest = Path(dest_root)
+    dest.mkdir(parents=True, exist_ok=True)
+
+    bars = _load_named_frame(source, "bars", preferred_format=preferred_format)
+    metadata = _load_named_frame(source, "metadata", preferred_format=preferred_format)
+    symbol_mapping = _load_named_frame(source, "symbol_mapping", preferred_format=preferred_format)
+    benchmark = _load_named_frame(source, "benchmark", preferred_format=preferred_format)
+    delistings = _load_named_frame(source, "delistings", preferred_format=preferred_format)
+    corporate_actions = _load_named_frame(source, "corporate_actions", preferred_format=preferred_format)
+
+    bars.to_csv(dest / "bars.csv", index=False)
+    metadata.to_csv(dest / "metadata.csv", index=False)
+    symbol_mapping.to_csv(dest / "symbol_mapping.csv", index=False)
+    benchmark.to_csv(dest / "benchmark.csv", index=False)
+    delistings.to_csv(dest / "delistings.csv", index=False)
+    corporate_actions.to_csv(dest / "corporate_actions.csv", index=False)
+
+    bundle = LocalTableDataAdapter(str(dest), preferred_format="csv").load_bundle()
+    report = validate_point_in_time_bundle(bundle)
+    quality_payload = {
+        "source": {
+            "provider": source_name,
+            "source_root": str(source.resolve()),
+            "benchmark_name": benchmark_name,
+            "import_format": preferred_format,
+        },
+        "dataset_notes": {
+            "import_workflow": "Imported from external/manual normalized tables into repo-native bundle format.",
+            "notes": notes,
+            "delistings_present": int(len(delistings)),
+            "corporate_actions_present": int(len(corporate_actions)),
+        },
+        "row_counts": {
+            "bars": int(len(bars)),
+            "metadata": int(len(metadata)),
+            "symbol_mapping": int(len(symbol_mapping)),
+            "benchmark": int(len(benchmark)),
+            "delistings": int(len(delistings)),
+            "corporate_actions": int(len(corporate_actions)),
+        },
+        "validation_summary": report.summary,
+    }
+    save_json(str(dest / "manifest.json"), bundle.dataset_manifest)
+    save_json(str(dest / "data_quality.json"), quality_payload)
+    return {
+        "dest_root": str(dest),
+        "manifest": bundle.dataset_manifest,
+        "validation": {
+            "ok": report.ok,
+            "issue_count": len(report.issues),
+            "issues": [
+                {"level": issue.level, "code": issue.code, "message": issue.message, "context": issue.context}
+                for issue in report.issues
+            ],
+        },
+    }
 
 
 def _load_named_frame(base: Path, stem: str, multi_index: list[str] | None = None, preferred_format: str = "auto") -> pd.DataFrame:

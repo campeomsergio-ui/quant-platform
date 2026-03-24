@@ -4,7 +4,7 @@ import argparse
 from datetime import UTC, datetime
 from typing import Sequence
 
-from quant_platform.data_access import LocalJsonDataAdapter, inspect_local_dataset
+from quant_platform.data_access import LocalJsonDataAdapter, import_external_table_bundle, inspect_local_dataset
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.io import load_json, save_json
@@ -70,6 +70,12 @@ def run_paper_daily(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_import_external_dataset(args: argparse.Namespace) -> int:
+    payload = import_external_table_bundle(args.source_root, args.dest_root, source_name=args.source_name, notes=args.notes, benchmark_name=args.benchmark_name, preferred_format=args.preferred_format)
+    print(payload)
+    return 0
+
+
 def run_residual_momentum_cycle_cli(args: argparse.Namespace) -> int:
     print({"stage": "bundle_load_start", "data_root": args.data_root})
     bundle = LocalJsonDataAdapter(args.data_root).load_bundle()
@@ -125,6 +131,14 @@ def build_parser() -> argparse.ArgumentParser:
     paper.add_argument("--dry-run", action="store_true")
     paper.add_argument("--manual-kill", action="store_true")
     paper.set_defaults(func=run_paper_daily)
+    import_ds = sub.add_parser("import-external-dataset")
+    import_ds.add_argument("--source-root", required=True)
+    import_ds.add_argument("--dest-root", required=True)
+    import_ds.add_argument("--source-name", required=True)
+    import_ds.add_argument("--benchmark-name", default="")
+    import_ds.add_argument("--preferred-format", default="auto")
+    import_ds.add_argument("--notes", default="")
+    import_ds.set_defaults(func=run_import_external_dataset)
     rmom = sub.add_parser("run-residual-momentum-cycle")
     rmom.add_argument("--data-root", required=True)
     rmom.add_argument("--registry", default=DEFAULT_REGISTRY_PATH)
