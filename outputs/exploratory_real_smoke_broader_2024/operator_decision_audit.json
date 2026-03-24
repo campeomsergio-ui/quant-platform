@@ -1,0 +1,103 @@
+{
+  "dataset": {
+    "dataset_root": "data/real_us_daily_stooq_broader_2024_smoke",
+    "source": "Stooq public daily CSV endpoint",
+    "benchmark": "SPY close-to-close returns from Stooq",
+    "date_range": {
+      "start": "2024-01-02",
+      "end": "2025-03-31",
+      "trading_days": 312
+    },
+    "symbol_count": 16,
+    "history_quality": "adequate_history",
+    "coverage_quality": "narrow_or_sample",
+    "limitations": [
+      "convenience universe, not survivorship-free",
+      "static hand-entered metadata",
+      "empty delistings / corporate actions",
+      "benchmark is ETF proxy, not total-return index"
+    ]
+  },
+  "sleeves": {
+    "frozen_baseline": {
+      "status": "mechanically valid but poor",
+      "recommendation": "kill",
+      "metrics": {
+        "num_signal_days": 312.0,
+        "num_backtest_days": 306.0,
+        "annualized_return": -0.45597757800016714,
+        "net_sharpe": -10.760982689895968,
+        "max_drawdown": 0.4248880686277784,
+        "average_turnover": 0.014310328033356743
+      },
+      "cost_summary": {
+        "baseline_total_cost": 0.5504458457095969,
+        "cost_1_5x_total": 0.8256687685643953,
+        "cost_2_0x_total": 1.1008916914191937
+      },
+      "long_short_attribution": {
+        "long_total": 0.002763746688077339,
+        "short_total": -0.006004959978683494,
+        "net_total": -0.003241213290606155,
+        "one_sided_pnl_ratio": 0.46024398121351157
+      },
+      "reason": "Completed mechanically on the broader sample but remains strongly negative with poor risk-adjusted performance."
+    },
+    "residual_momentum_single_candidate": {
+      "status": "less bad but inconclusive",
+      "recommendation": "watch",
+      "candidate_id": "rmom_lb20_sk5_industry_beta_log_mcap",
+      "params": {
+        "lookback": 20,
+        "skip_window": 5,
+        "residual_model": "industry_beta_log_mcap"
+      },
+      "metrics": {
+        "num_signal_days": 312.0,
+        "num_backtest_days": 286.0,
+        "annualized_return": -0.222116121940185,
+        "net_sharpe": -7.0478220392671505,
+        "max_drawdown": 0.22063483663927264,
+        "average_turnover": 0.007093487769706017
+      },
+      "cost_summary": {
+        "baseline_total_cost": 0.25475436988570227,
+        "cost_1_5x_total": 0.38213155482855343,
+        "cost_2_0x_total": 0.5095087397714045
+      },
+      "long_short_attribution": {
+        "long_total": 9.644655180556589e-05,
+        "short_total": 0.0025737531954327523,
+        "net_total": 0.002670199747238318,
+        "one_sided_pnl_ratio": 0.037473115891314586
+      },
+      "benchmark_relative": {
+        "mean_excess_return": 0.000948255905695444,
+        "std_excess_return": 1.1743720031690137e-05,
+        "count": 286.0,
+        "cumulative_excess_return": 0.271201189028897,
+        "history_quality": "longer_history"
+      },
+      "reason": "Still negative, but materially less bad than the frozen baseline on both the 12-name and 16-name smoke datasets."
+    }
+  },
+  "comparison": {
+    "residual_less_bad_than_baseline": true,
+    "ranking_stable_vs_prior_12_name_sample": true,
+    "current_assessment": "mildly more informative but still not investable"
+  },
+  "operator_view": {
+    "keep_watch_kill": {
+      "frozen_baseline": "kill",
+      "residual_momentum_single_candidate": "watch"
+    },
+    "what_is_still_too_weak_to_trust": [
+      "16 names is still too narrow for strong inference",
+      "sample is not survivorship-free",
+      "metadata is placeholder quality",
+      "delistings and corporate actions are empty",
+      "both sleeves remain negative"
+    ],
+    "next_dataset_step": "Build the next-smallest reproducible public/local US daily sample by expanding the same Stooq-based large-cap convenience universe to roughly 24-32 names with the same 2024-01-02 to 2025-03-31 window, unchanged alpha logic, and the same manifest/validation pipeline."
+  }
+}
