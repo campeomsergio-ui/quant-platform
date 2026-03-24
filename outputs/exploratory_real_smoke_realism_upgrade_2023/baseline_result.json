@@ -1,0 +1,724 @@
+{
+  "metrics": {
+    "net_sharpe": -20.740946422580116,
+    "annualized_return": -1.3928965597648504,
+    "max_drawdown": 0.9539966583542779,
+    "t_stat": -30.808155313859782
+  },
+  "diagnostics": {
+    "num_backtest_days": 556.0,
+    "backtest_status": "implemented_core_backtest",
+    "market_tag": "US_equities",
+    "average_turnover": 0.0494397120965135,
+    "effective_bets": 1.7070907083505513,
+    "long_short_attribution": {
+      "long_total": 0.010713239400449262,
+      "short_total": -0.028279785822483486,
+      "net_total": -0.017566546422034222,
+      "one_sided_pnl_ratio": 0.378830287729867
+    },
+    "turnover_decomposition": {
+      "signal_change": 1111.9999999999998,
+      "tranche_rolloff": 1101.9999999999998,
+      "constraint_repair": 4767.440249149752,
+      "internal_netting_effect": 693.9999999999995
+    },
+    "exposure_summary": {
+      "beta": -6.938893903907228e-18,
+      "sector_exposures": {
+        "Communication Services": 0.0008368958771103538,
+        "Consumer Discretionary": 0.001022872738690433,
+        "Consumer Staples": 0.0008740912494263689,
+        "Energy": 0.0007253097601623085,
+        "Financials": 0.0019527570465908265,
+        "Health Care": -0.013272105886046905,
+        "Industrials": 0.001041470424848441,
+        "Information Technology": 0.002231722338960945,
+        "Materials": 0.000297562978528126,
+        "Utilities": 0.00020457454773808664
+      },
+      "size_proxy": 17470214718.740192,
+      "concentration": 0.014852909209477579,
+      "effective_breadth": 11.944513325310206
+    },
+    "capacity_stress": {
+      "baseline_cost": 3.0556496727416835,
+      "cost_1_5x": 4.583474509112525,
+      "cost_2_0x": 6.111299345483367,
+      "avg_adv_participation": 2.0924229571908305e-10,
+      "max_adv_participation": 1.813749283523982e-08
+    },
+    "delay_cost_sensitivity": {
+      "cost_stress": {
+        "baseline_total_cost": 3.0556496727416835,
+        "cost_1_5x_total": 4.583474509112525,
+        "cost_2_0x_total": 6.111299345483367
+      },
+      "execution_delay": {
+        "baseline_days": 1,
+        "optimistic_same_close_mode": false
+      }
+    },
+    "num_signal_days": 562.0,
+    "strategy_label": "frozen_baseline",
+    "data_validation": {
+      "bar_row_count": 17422,
+      "symbol_count": 31,
+      "benchmark_count": 562,
+      "issue_count": 0,
+      "manifest": {
+        "date_range": {
+          "start": "2023-01-03",
+          "end": "2025-03-31",
+          "trading_days": 562
+        },
+        "symbol_count": 31,
+        "symbol_coverage": {
+          "min_symbols_per_day": 31,
+          "median_symbols_per_day": 31.0,
+          "max_symbols_per_day": 31,
+          "coverage_stability": 1.0
+        },
+        "benchmark_coverage": {
+          "count": 562,
+          "coverage_ratio_vs_trading_days": 1.0
+        },
+        "metadata_coverage": {
+          "row_count": 31,
+          "sector_coverage": 1.0,
+          "industry_coverage": 1.0
+        },
+        "delisting_coverage": {
+          "count": 0
+        },
+        "symbol_mapping_coverage": {
+          "count": 31,
+          "raw_symbols": 31
+        },
+        "field_availability": {
+          "bars": {
+            "adv": 1.0,
+            "close": 1.0,
+            "daily_volatility": 1.0,
+            "high": 1.0,
+            "low": 1.0,
+            "open": 1.0,
+            "volume": 1.0
+          },
+          "metadata": {
+            "beta": 1.0,
+            "country": 1.0,
+            "currency": 1.0,
+            "effective_from": 1.0,
+            "effective_to": 0.0,
+            "industry": 1.0,
+            "is_primary_listing": 1.0,
+            "market_cap": 1.0,
+            "region": 1.0,
+            "sector": 1.0,
+            "security_type": 1.0,
+            "symbol": 1.0
+          }
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "uneven_symbol_coverage": false
+      },
+      "quality_metadata": {
+        "source": {
+          "provider": "Stooq daily CSV endpoint",
+          "bars_urls": {
+            "AAPL": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+            "MSFT": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+            "NVDA": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+            "AVGO": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+            "ORCL": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+            "GOOGL": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+            "META": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+            "AMZN": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+            "HD": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+            "MCD": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+            "JPM": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+            "BAC": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+            "WFC": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+            "V": "https://stooq.com/q/d/l/?s=v.us&i=d",
+            "MA": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+            "JNJ": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+            "UNH": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+            "PFE": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+            "MRK": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+            "ABBV": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+            "XOM": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+            "CVX": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+            "PG": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+            "KO": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+            "WMT": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+            "COST": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+            "CAT": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+            "RTX": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+            "UNP": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+            "NEE": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+            "LIN": "https://stooq.com/q/d/l/?s=lin.us&i=d"
+          },
+          "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+          "download_window": {
+            "start": "2023-01-03",
+            "end": "2025-03-31"
+          }
+        },
+        "dataset_notes": {
+          "universe": "Higher-truth large-cap US convenience sample of 31 names across major sectors with full benchmark-aligned daily history.",
+          "construction_method": "Started from a broader large-cap US candidate list and retained only names with complete daily coverage exactly matching the SPY benchmark date set over the full window.",
+          "metadata_origin": "Hand-entered static sector/industry/market-cap/beta metadata for public-data evaluation only.",
+          "delistings": "Empty; no public survivorship-aware delisting feed integrated in this run.",
+          "corporate_actions": "Empty; no public corporate-action normalization integrated in this run.",
+          "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq; more realistic market benchmark than SPY ETF proxy, but still not total-return.",
+          "rejected_symbols": [
+            {
+              "symbol": "BRK-B",
+              "reason": "missing_date_or_empty",
+              "url": "https://stooq.com/q/d/l/?s=brkb.us&i=d"
+            }
+          ],
+          "benchmark_upgrade_vs_prior": "Replaced SPY ETF proxy benchmark with ^SPX price index benchmark while keeping the same 31-name benchmark-aligned universe and date window."
+        },
+        "row_counts": {
+          "bars": 17422,
+          "symbols": 31,
+          "benchmark_rows": 562
+        },
+        "source_rows": [
+          {
+            "symbol": "AAPL",
+            "url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "MSFT",
+            "url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "NVDA",
+            "url": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "AVGO",
+            "url": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "ORCL",
+            "url": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "GOOGL",
+            "url": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "META",
+            "url": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "AMZN",
+            "url": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "HD",
+            "url": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "MCD",
+            "url": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "JPM",
+            "url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "BAC",
+            "url": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "WFC",
+            "url": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "V",
+            "url": "https://stooq.com/q/d/l/?s=v.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "MA",
+            "url": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "JNJ",
+            "url": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "UNH",
+            "url": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "PFE",
+            "url": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "MRK",
+            "url": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "ABBV",
+            "url": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "XOM",
+            "url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "CVX",
+            "url": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "PG",
+            "url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "KO",
+            "url": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "WMT",
+            "url": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "COST",
+            "url": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "CAT",
+            "url": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "RTX",
+            "url": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "UNP",
+            "url": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "NEE",
+            "url": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+            "rows": 562
+          },
+          {
+            "symbol": "LIN",
+            "url": "https://stooq.com/q/d/l/?s=lin.us&i=d",
+            "rows": 562
+          }
+        ]
+      },
+      "history_quality": "adequate_history",
+      "coverage_quality": "narrow_or_sample"
+    },
+    "history_quality": "adequate_history",
+    "coverage_quality": "narrow_or_sample",
+    "data_quality": {
+      "manifest": {
+        "date_range": {
+          "start": "2023-01-03",
+          "end": "2025-03-31",
+          "trading_days": 562
+        },
+        "symbol_count": 31,
+        "symbol_coverage": {
+          "min_symbols_per_day": 31,
+          "median_symbols_per_day": 31.0,
+          "max_symbols_per_day": 31,
+          "coverage_stability": 1.0
+        },
+        "benchmark_coverage": {
+          "count": 562,
+          "coverage_ratio_vs_trading_days": 1.0
+        },
+        "metadata_coverage": {
+          "row_count": 31,
+          "sector_coverage": 1.0,
+          "industry_coverage": 1.0
+        },
+        "delisting_coverage": {
+          "count": 0
+        },
+        "symbol_mapping_coverage": {
+          "count": 31,
+          "raw_symbols": 31
+        },
+        "field_availability": {
+          "bars": {
+            "adv": 1.0,
+            "close": 1.0,
+            "daily_volatility": 1.0,
+            "high": 1.0,
+            "low": 1.0,
+            "open": 1.0,
+            "volume": 1.0
+          },
+          "metadata": {
+            "beta": 1.0,
+            "country": 1.0,
+            "currency": 1.0,
+            "effective_from": 1.0,
+            "effective_to": 0.0,
+            "industry": 1.0,
+            "is_primary_listing": 1.0,
+            "market_cap": 1.0,
+            "region": 1.0,
+            "sector": 1.0,
+            "security_type": 1.0,
+            "symbol": 1.0
+          }
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample",
+        "uneven_symbol_coverage": false
+      },
+      "validation_summary": {
+        "bar_row_count": 17422,
+        "symbol_count": 31,
+        "benchmark_count": 562,
+        "issue_count": 0,
+        "manifest": {
+          "date_range": {
+            "start": "2023-01-03",
+            "end": "2025-03-31",
+            "trading_days": 562
+          },
+          "symbol_count": 31,
+          "symbol_coverage": {
+            "min_symbols_per_day": 31,
+            "median_symbols_per_day": 31.0,
+            "max_symbols_per_day": 31,
+            "coverage_stability": 1.0
+          },
+          "benchmark_coverage": {
+            "count": 562,
+            "coverage_ratio_vs_trading_days": 1.0
+          },
+          "metadata_coverage": {
+            "row_count": 31,
+            "sector_coverage": 1.0,
+            "industry_coverage": 1.0
+          },
+          "delisting_coverage": {
+            "count": 0
+          },
+          "symbol_mapping_coverage": {
+            "count": 31,
+            "raw_symbols": 31
+          },
+          "field_availability": {
+            "bars": {
+              "adv": 1.0,
+              "close": 1.0,
+              "daily_volatility": 1.0,
+              "high": 1.0,
+              "low": 1.0,
+              "open": 1.0,
+              "volume": 1.0
+            },
+            "metadata": {
+              "beta": 1.0,
+              "country": 1.0,
+              "currency": 1.0,
+              "effective_from": 1.0,
+              "effective_to": 0.0,
+              "industry": 1.0,
+              "is_primary_listing": 1.0,
+              "market_cap": 1.0,
+              "region": 1.0,
+              "sector": 1.0,
+              "security_type": 1.0,
+              "symbol": 1.0
+            }
+          },
+          "history_quality": "adequate_history",
+          "coverage_quality": "narrow_or_sample",
+          "uneven_symbol_coverage": false
+        },
+        "quality_metadata": {
+          "source": {
+            "provider": "Stooq daily CSV endpoint",
+            "bars_urls": {
+              "AAPL": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+              "MSFT": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+              "NVDA": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+              "AVGO": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+              "ORCL": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+              "GOOGL": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+              "META": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+              "AMZN": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+              "HD": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+              "MCD": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+              "JPM": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+              "BAC": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+              "WFC": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+              "V": "https://stooq.com/q/d/l/?s=v.us&i=d",
+              "MA": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+              "JNJ": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+              "UNH": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+              "PFE": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+              "MRK": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+              "ABBV": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+              "XOM": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+              "CVX": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+              "PG": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+              "KO": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+              "WMT": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+              "COST": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+              "CAT": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+              "RTX": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+              "UNP": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+              "NEE": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+              "LIN": "https://stooq.com/q/d/l/?s=lin.us&i=d"
+            },
+            "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+            "download_window": {
+              "start": "2023-01-03",
+              "end": "2025-03-31"
+            }
+          },
+          "dataset_notes": {
+            "universe": "Higher-truth large-cap US convenience sample of 31 names across major sectors with full benchmark-aligned daily history.",
+            "construction_method": "Started from a broader large-cap US candidate list and retained only names with complete daily coverage exactly matching the SPY benchmark date set over the full window.",
+            "metadata_origin": "Hand-entered static sector/industry/market-cap/beta metadata for public-data evaluation only.",
+            "delistings": "Empty; no public survivorship-aware delisting feed integrated in this run.",
+            "corporate_actions": "Empty; no public corporate-action normalization integrated in this run.",
+            "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq; more realistic market benchmark than SPY ETF proxy, but still not total-return.",
+            "rejected_symbols": [
+              {
+                "symbol": "BRK-B",
+                "reason": "missing_date_or_empty",
+                "url": "https://stooq.com/q/d/l/?s=brkb.us&i=d"
+              }
+            ],
+            "benchmark_upgrade_vs_prior": "Replaced SPY ETF proxy benchmark with ^SPX price index benchmark while keeping the same 31-name benchmark-aligned universe and date window."
+          },
+          "row_counts": {
+            "bars": 17422,
+            "symbols": 31,
+            "benchmark_rows": 562
+          },
+          "source_rows": [
+            {
+              "symbol": "AAPL",
+              "url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "MSFT",
+              "url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "NVDA",
+              "url": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "AVGO",
+              "url": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "ORCL",
+              "url": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "GOOGL",
+              "url": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "META",
+              "url": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "AMZN",
+              "url": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "HD",
+              "url": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "MCD",
+              "url": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "JPM",
+              "url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "BAC",
+              "url": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "WFC",
+              "url": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "V",
+              "url": "https://stooq.com/q/d/l/?s=v.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "MA",
+              "url": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "JNJ",
+              "url": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "UNH",
+              "url": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "PFE",
+              "url": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "MRK",
+              "url": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "ABBV",
+              "url": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "XOM",
+              "url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "CVX",
+              "url": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "PG",
+              "url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "KO",
+              "url": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "WMT",
+              "url": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "COST",
+              "url": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "CAT",
+              "url": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "RTX",
+              "url": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "UNP",
+              "url": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "NEE",
+              "url": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+              "rows": 562
+            },
+            {
+              "symbol": "LIN",
+              "url": "https://stooq.com/q/d/l/?s=lin.us&i=d",
+              "rows": 562
+            }
+          ]
+        },
+        "history_quality": "adequate_history",
+        "coverage_quality": "narrow_or_sample"
+      },
+      "history_quality": "adequate_history",
+      "coverage_quality": "narrow_or_sample",
+      "uneven_symbol_coverage": false,
+      "benchmark_coverage": {
+        "count": 562,
+        "coverage_ratio_vs_trading_days": 1.0
+      },
+      "metadata_coverage": {
+        "row_count": 31,
+        "sector_coverage": 1.0,
+        "industry_coverage": 1.0
+      },
+      "date_range": {
+        "start": "2023-01-03",
+        "end": "2025-03-31",
+        "trading_days": 562
+      },
+      "symbol_coverage": {
+        "min_symbols_per_day": 31,
+        "median_symbols_per_day": 31.0,
+        "max_symbols_per_day": 31,
+        "coverage_stability": 1.0
+      }
+    }
+  }
+}

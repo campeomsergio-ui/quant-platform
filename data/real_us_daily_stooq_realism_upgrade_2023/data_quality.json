@@ -1,0 +1,221 @@
+{
+  "source": {
+    "provider": "Stooq daily CSV endpoint",
+    "bars_urls": {
+      "AAPL": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "MSFT": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "NVDA": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "AVGO": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "ORCL": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+      "GOOGL": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "META": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "AMZN": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "HD": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "MCD": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+      "JPM": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "BAC": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "WFC": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+      "V": "https://stooq.com/q/d/l/?s=v.us&i=d",
+      "MA": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+      "JNJ": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "UNH": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "PFE": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+      "MRK": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+      "ABBV": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+      "XOM": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "CVX": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "PG": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "KO": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+      "WMT": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+      "COST": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+      "CAT": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+      "RTX": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+      "UNP": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+      "NEE": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+      "LIN": "https://stooq.com/q/d/l/?s=lin.us&i=d"
+    },
+    "benchmark_url": "https://stooq.com/q/d/l/?s=^spx&i=d",
+    "download_window": {
+      "start": "2023-01-03",
+      "end": "2025-03-31"
+    }
+  },
+  "dataset_notes": {
+    "universe": "Higher-truth large-cap US convenience sample of 31 names across major sectors with full benchmark-aligned daily history.",
+    "construction_method": "Started from a broader large-cap US candidate list and retained only names with complete daily coverage exactly matching the SPY benchmark date set over the full window.",
+    "metadata_origin": "Hand-entered static sector/industry/market-cap/beta metadata for public-data evaluation only.",
+    "delistings": "Empty; no public survivorship-aware delisting feed integrated in this run.",
+    "corporate_actions": "Empty; no public corporate-action normalization integrated in this run.",
+    "benchmark": "S&P 500 price index (^SPX) close-to-close returns from Stooq; more realistic market benchmark than SPY ETF proxy, but still not total-return.",
+    "rejected_symbols": [
+      {
+        "symbol": "BRK-B",
+        "reason": "missing_date_or_empty",
+        "url": "https://stooq.com/q/d/l/?s=brkb.us&i=d"
+      }
+    ],
+    "benchmark_upgrade_vs_prior": "Replaced SPY ETF proxy benchmark with ^SPX price index benchmark while keeping the same 31-name benchmark-aligned universe and date window."
+  },
+  "row_counts": {
+    "bars": 17422,
+    "symbols": 31,
+    "benchmark_rows": 562
+  },
+  "source_rows": [
+    {
+      "symbol": "AAPL",
+      "url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "MSFT",
+      "url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "NVDA",
+      "url": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "AVGO",
+      "url": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "ORCL",
+      "url": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "GOOGL",
+      "url": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "META",
+      "url": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "AMZN",
+      "url": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "HD",
+      "url": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "MCD",
+      "url": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "JPM",
+      "url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "BAC",
+      "url": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "WFC",
+      "url": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "V",
+      "url": "https://stooq.com/q/d/l/?s=v.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "MA",
+      "url": "https://stooq.com/q/d/l/?s=ma.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "JNJ",
+      "url": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "UNH",
+      "url": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "PFE",
+      "url": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "MRK",
+      "url": "https://stooq.com/q/d/l/?s=mrk.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "ABBV",
+      "url": "https://stooq.com/q/d/l/?s=abbv.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "XOM",
+      "url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "CVX",
+      "url": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "PG",
+      "url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "KO",
+      "url": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "WMT",
+      "url": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "COST",
+      "url": "https://stooq.com/q/d/l/?s=cost.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "CAT",
+      "url": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "RTX",
+      "url": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "UNP",
+      "url": "https://stooq.com/q/d/l/?s=unp.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "NEE",
+      "url": "https://stooq.com/q/d/l/?s=nee.us&i=d",
+      "rows": 562
+    },
+    {
+      "symbol": "LIN",
+      "url": "https://stooq.com/q/d/l/?s=lin.us&i=d",
+      "rows": 562
+    }
+  ]
+}
