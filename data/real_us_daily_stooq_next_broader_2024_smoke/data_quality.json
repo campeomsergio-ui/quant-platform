@@ -1,0 +1,170 @@
+{
+  "source": {
+    "provider": "Stooq daily CSV endpoint",
+    "bars_urls": {
+      "AAPL": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "MSFT": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "NVDA": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "AVGO": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "ORCL": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+      "GOOGL": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "META": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "AMZN": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "HD": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "MCD": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+      "JPM": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "BAC": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "WFC": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+      "JNJ": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "UNH": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "PFE": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+      "XOM": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "CVX": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "PG": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "KO": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+      "WMT": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+      "CAT": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+      "RTX": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+      "LLY": "https://stooq.com/q/d/l/?s=lly.us&i=d"
+    },
+    "benchmark_url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+    "download_window": {
+      "start": "2024-01-01",
+      "end": "2025-03-31"
+    }
+  },
+  "dataset_notes": {
+    "universe": "Next broader convenience sample of 24 large-cap US equities across major sectors.",
+    "metadata_origin": "Hand-entered static metadata placeholders for public-data smoke test only.",
+    "delistings": "Empty.",
+    "corporate_actions": "Empty.",
+    "benchmark": "SPY close-to-close returns from Stooq."
+  },
+  "row_counts": {
+    "bars": 7488,
+    "symbols": 24,
+    "benchmark_rows": 312
+  },
+  "source_rows": [
+    {
+      "symbol": "AAPL",
+      "url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "MSFT",
+      "url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "NVDA",
+      "url": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "AVGO",
+      "url": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "ORCL",
+      "url": "https://stooq.com/q/d/l/?s=orcl.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "GOOGL",
+      "url": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "META",
+      "url": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "AMZN",
+      "url": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "HD",
+      "url": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "MCD",
+      "url": "https://stooq.com/q/d/l/?s=mcd.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "JPM",
+      "url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "BAC",
+      "url": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "WFC",
+      "url": "https://stooq.com/q/d/l/?s=wfc.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "JNJ",
+      "url": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "UNH",
+      "url": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "PFE",
+      "url": "https://stooq.com/q/d/l/?s=pfe.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "XOM",
+      "url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "CVX",
+      "url": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "PG",
+      "url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "KO",
+      "url": "https://stooq.com/q/d/l/?s=ko.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "WMT",
+      "url": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "CAT",
+      "url": "https://stooq.com/q/d/l/?s=cat.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "RTX",
+      "url": "https://stooq.com/q/d/l/?s=rtx.us&i=d",
+      "rows": 813
+    },
+    {
+      "symbol": "LLY",
+      "url": "https://stooq.com/q/d/l/?s=lly.us&i=d",
+      "rows": 312
+    }
+  ]
+}
