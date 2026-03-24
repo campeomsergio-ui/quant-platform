@@ -1,0 +1,122 @@
+{
+  "source": {
+    "provider": "Stooq daily CSV endpoint",
+    "bars_urls": {
+      "AAPL": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "MSFT": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "NVDA": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "AVGO": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "GOOGL": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "META": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "AMZN": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "HD": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "JPM": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "BAC": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "JNJ": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "UNH": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "XOM": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "CVX": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "PG": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "WMT": "https://stooq.com/q/d/l/?s=wmt.us&i=d"
+    },
+    "benchmark_url": "https://stooq.com/q/d/l/?s=spy.us&i=d",
+    "download_window": {
+      "start": "2024-01-01",
+      "end": "2025-03-31"
+    }
+  },
+  "dataset_notes": {
+    "universe": "Broader convenience sample of 16 large-cap US equities across major sectors.",
+    "metadata_origin": "Hand-entered static metadata placeholders for public-data smoke test only.",
+    "delistings": "Empty.",
+    "corporate_actions": "Empty.",
+    "benchmark": "SPY close-to-close returns from Stooq."
+  },
+  "row_counts": {
+    "bars": 4992,
+    "symbols": 16,
+    "benchmark_rows": 312
+  },
+  "source_rows": [
+    {
+      "symbol": "AAPL",
+      "url": "https://stooq.com/q/d/l/?s=aapl.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "MSFT",
+      "url": "https://stooq.com/q/d/l/?s=msft.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "NVDA",
+      "url": "https://stooq.com/q/d/l/?s=nvda.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "AVGO",
+      "url": "https://stooq.com/q/d/l/?s=avgo.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "GOOGL",
+      "url": "https://stooq.com/q/d/l/?s=googl.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "META",
+      "url": "https://stooq.com/q/d/l/?s=meta.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "AMZN",
+      "url": "https://stooq.com/q/d/l/?s=amzn.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "HD",
+      "url": "https://stooq.com/q/d/l/?s=hd.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "JPM",
+      "url": "https://stooq.com/q/d/l/?s=jpm.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "BAC",
+      "url": "https://stooq.com/q/d/l/?s=bac.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "JNJ",
+      "url": "https://stooq.com/q/d/l/?s=jnj.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "UNH",
+      "url": "https://stooq.com/q/d/l/?s=unh.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "XOM",
+      "url": "https://stooq.com/q/d/l/?s=xom.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "CVX",
+      "url": "https://stooq.com/q/d/l/?s=cvx.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "PG",
+      "url": "https://stooq.com/q/d/l/?s=pg.us&i=d",
+      "rows": 312
+    },
+    {
+      "symbol": "WMT",
+      "url": "https://stooq.com/q/d/l/?s=wmt.us&i=d",
+      "rows": 312
+    }
+  ]
+}
