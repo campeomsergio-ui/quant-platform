@@ -34,3 +34,12 @@ def test_locked_test_enforcement(tmp_path: Path) -> None:
         assert True
     else:
         assert False
+
+
+def test_generate_openclaw_plan_cli(tmp_path: Path) -> None:
+    output = tmp_path / "openclaw_plan.json"
+    assert main(["generate-openclaw-plan", "--repo-root", str(tmp_path), "--output-path", str(output)]) == 0
+    payload = load_json(str(output))
+    assert payload["handoff_target"] == "OpenClaw"
+    assert payload["generated_tasks"]
+    assert payload["generated_tasks"][0]["task_id"].startswith("qp-")

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import argparse
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Sequence
 
 from quant_platform.data_access import LocalJsonDataAdapter, inspect_local_dataset
 from quant_platform.experiment_plan import load_experiment_plan, validate_experiment_plan
 from quant_platform.experiment_registry import CandidateRecord, append_candidate_record, create_experiment_record, is_final_test_locked, mark_final_test_touched
 from quant_platform.io import load_json, save_json
+from quant_platform.openclaw import build_openclaw_plan
 from quant_platform.paper.adapter import PaperBrokerAdapter
 from quant_platform.paper.runtime import PaperRuntimeConfig, run_daily_paper_cycle
 from quant_platform.research import BaselineResearchConfig, ResidualMomentumCycleConfig, run_baseline_research, run_residual_momentum_cycle
@@ -31,7 +32,7 @@ def run_experiment(args: argparse.Namespace) -> int:
     plan = load_json(args.experiment)
     blueprint = load_json(args.blueprint)
     registry = load_json(args.registry)
-    record = create_experiment_record(spec, plan, blueprint, seed=args.seed, metadata={"created_at": datetime.now(UTC).isoformat()})
+    record = create_experiment_record(spec, plan, blueprint, seed=args.seed, metadata={"created_at": datetime.now(timezone.utc).isoformat()})
     experiments = dict(registry.get("experiments", {}))
     experiment_entry = dict(experiments.get(record.experiment_id, {}))
     experiment_entry.update({"record": {"experiment_id": record.experiment_id, "spec_hash": record.spec_hash, "plan_hash": record.plan_hash, "blueprint_hash": record.blueprint_hash, "seed": record.seed, "metadata": record.metadata}})
@@ -42,7 +43,7 @@ def run_experiment(args: argparse.Namespace) -> int:
     if args.touch_final_test:
         if is_final_test_locked(registry, record.experiment_id):
             raise ValueError("locked final test already touched for experiment")
-        registry = mark_final_test_touched(registry, record.experiment_id, datetime.now(UTC).isoformat(), "final_test", "manual_cli_touch")
+        registry = mark_final_test_touched(registry, record.experiment_id, datetime.now(timezone.utc).isoformat(), "final_test", "manual_cli_touch")
     save_json(args.registry, registry)
     return 0
 
@@ -81,6 +82,14 @@ def run_residual_momentum_cycle_cli(args: argparse.Namespace) -> int:
     print({"cycle_label": "new_research_cycle", "experiment_id": result.experiment_id, "best_candidate": result.comparison["best_residual_momentum_candidate"], "final_test_state": result.comparison["aggregate"]["final_test_state"], "export_path": args.export_path})
     return 0
 
+
+
+def run_generate_openclaw_plan(args: argparse.Namespace) -> int:
+    payload = build_openclaw_plan(args.repo_root)
+    if args.output_path:
+        save_json(args.output_path, payload)
+    print(payload)
+    return 0
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="quant-platform")
@@ -121,6 +130,10 @@ def build_parser() -> argparse.ArgumentParser:
     paper.add_argument("--dry-run", action="store_true")
     paper.add_argument("--manual-kill", action="store_true")
     paper.set_defaults(func=run_paper_daily)
+    openclaw = sub.add_parser("generate-openclaw-plan")
+    openclaw.add_argument("--repo-root", default=".")
+    openclaw.add_argument("--output-path")
+    openclaw.set_defaults(func=run_generate_openclaw_plan)
     rmom = sub.add_parser("run-residual-momentum-cycle")
     rmom.add_argument("--data-root", required=True)
     rmom.add_argument("--registry", default=DEFAULT_REGISTRY_PATH)
