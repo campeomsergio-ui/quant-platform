@@ -12,6 +12,7 @@ from quant_platform.io import load_json, save_json
 from quant_platform.paper.adapter import PaperBrokerAdapter
 from quant_platform.paper.runtime import PaperRuntimeConfig, run_daily_paper_cycle
 from quant_platform.research import BaselineResearchConfig, ResidualMomentumCycleConfig, run_baseline_research, run_residual_momentum_cycle
+from quant_platform.research_ops import OrchestratorConfig, SUPPORTED_SLEEVES, run_research_orchestrator
 from quant_platform.strategy_spec import load_strategy_spec, validate_strategy_spec
 from quant_platform.signals.mean_reversion import MeanReversionParams, MeanReversionSignal
 
@@ -110,6 +111,26 @@ def run_residual_momentum_cycle_cli(args: argparse.Namespace) -> int:
     return 0
 
 
+def run_research_orchestrator_cli(args: argparse.Namespace) -> int:
+    sleeves = tuple(args.sleeves) if args.sleeves else SUPPORTED_SLEEVES
+    payload = run_research_orchestrator(
+        OrchestratorConfig(
+            data_root=args.data_root,
+            preferred_format=args.preferred_format,
+            sleeves=sleeves,
+            stock_residual_lookback=args.stock_residual_lookback,
+            stock_residual_skip_window=args.stock_residual_skip_window,
+            stock_residual_model=args.stock_residual_model,
+            etf_candidate_id=args.etf_candidate_id,
+        ),
+        repo_root=args.repo_root,
+    )
+    if args.export_path:
+        save_json(args.export_path, payload)
+    print(payload)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="quant-platform")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -169,6 +190,17 @@ def build_parser() -> argparse.ArgumentParser:
     etf.add_argument("--rebalance-frequency", default="M")
     etf.add_argument("--execution-delay-days", type=int, default=1)
     etf.set_defaults(func=run_etf_trend_cycle_cli)
+    orchestrator = sub.add_parser("run-research-orchestrator")
+    orchestrator.add_argument("--data-root", required=True)
+    orchestrator.add_argument("--preferred-format", default="auto")
+    orchestrator.add_argument("--repo-root", default=".")
+    orchestrator.add_argument("--export-path")
+    orchestrator.add_argument("--sleeve", dest="sleeves", action="append", choices=list(SUPPORTED_SLEEVES), default=[])
+    orchestrator.add_argument("--stock-residual-lookback", type=int, default=20)
+    orchestrator.add_argument("--stock-residual-skip-window", type=int, default=5)
+    orchestrator.add_argument("--stock-residual-model", default="industry_beta_log_mcap")
+    orchestrator.add_argument("--etf-candidate-id", default="tsmom_ret_252_cash")
+    orchestrator.set_defaults(func=run_research_orchestrator_cli)
     rmom = sub.add_parser("run-residual-momentum-cycle")
     rmom.add_argument("--data-root", required=True)
     rmom.add_argument("--registry", default=DEFAULT_REGISTRY_PATH)

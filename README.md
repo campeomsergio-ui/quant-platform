@@ -15,6 +15,10 @@ Current usable CLI paths:
 - `spec-check`
 - `run-experiment`
 - `run-baseline-local`
+- `validate-external-dataset`
+- `import-external-dataset`
+- `inspect-data-local`
+- `run-research-orchestrator`
 
 Local sample-data helper:
 - `quant_platform.sample_data.write_sample_daily_equities_dataset(root)`
